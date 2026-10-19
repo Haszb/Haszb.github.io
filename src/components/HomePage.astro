@@ -80,24 +80,24 @@ const description =
 
 <BaseLayout lang={lang} title={title} description={description}>
   <section class="intro wrap" aria-labelledby="intro-title">
-    <div class="intro-text">
-      <div class="intro-head">
-        <div class="avatar">
-          <img src={p.photo} alt={p.photoAlt} width="400" height="500" />
-        </div>
-        <div class="intro-title">
-          <p class="label">{p.role}</p>
-          <h1 id="intro-title">{p.name}</h1>
-        </div>
+    <div class="intro-grid">
+      <div class="intro-title">
+        <p class="label">{p.role}</p>
+        <h1 id="intro-title">{p.name}</h1>
       </div>
       <div class="summary justified">
         <Summary />
       </div>
-      <ul class="intro-links">
-        <li><a class="arrow-link" href="#contact">{t(lang, 'nav.contact')}</a></li>
-        <li><a class="arrow-link" data-external href={p.github}>GitHub</a></li>
-        <li><a class="arrow-link" data-external href={p.linkedin}>LinkedIn</a></li>
-      </ul>
+      <div class="intro-aside">
+        <div class="avatar">
+          <img src={p.photo} alt={p.photoAlt} width="400" height="500" />
+        </div>
+        <ul class="intro-links">
+          <li><a class="arrow-link" href="#contact">{t(lang, 'nav.contact')}</a></li>
+          <li><a class="arrow-link" data-external href={p.github}>GitHub</a></li>
+          <li><a class="arrow-link" data-external href={p.linkedin}>LinkedIn</a></li>
+        </ul>
+      </div>
     </div>
   </section>
 
@@ -276,10 +276,34 @@ const description =
     padding-block: clamp(3rem, 9vw, 6.5rem) clamp(3rem, 7vw, 5rem);
   }
 
-  /* The text runs to the right edge of the page frame, like the content below the tab bar */
-  .intro-text {
+  /* Phones: a small headshot beside the name, then the summary and the links full width.
+     Wider screens: the photo and the links under it form a right column (see the media query
+     below), ending on the right edge of the page frame. */
+  .intro-grid {
     display: grid;
-    gap: 1.1rem;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 1.1rem clamp(1rem, 2.5vw, 1.6rem);
+  }
+
+  /* The photo and the links become cells of the grid above */
+  .intro-aside {
+    display: contents;
+  }
+
+  .avatar {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .intro-title {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: center;
+  }
+
+  .summary,
+  .intro-links {
+    grid-column: 1 / -1;
   }
 
   h1 {
@@ -316,20 +340,12 @@ const description =
     font-size: var(--step-0);
   }
 
-  /* Phones: a small headshot beside the name, cropped from the portrait photo to head and
-     shoulders. Wider screens: a fixed-size photo in a left column (see the media query below). */
-  .intro-head {
-    display: flex;
-    align-items: center;
-    gap: clamp(1rem, 2.5vw, 1.6rem);
-  }
-
-  .intro-head .label {
+  .intro-title .label {
     margin-bottom: 0.5rem;
   }
 
+  /* On phones the headshot is cropped from the portrait photo to head and shoulders */
   .avatar {
-    flex: none;
     width: clamp(4.5rem, 7vw, 6.5rem);
     aspect-ratio: 1;
     overflow: hidden;
@@ -346,32 +362,43 @@ const description =
     transform-origin: 50% 22%;
   }
 
-  /* Two fixed columns: the text, then the photo aligned to the top on the right. The text
-     never runs under the photo, so its line length stays constant (~70 characters). */
+  /* Two columns: the label, name and summary, then on the right the photo with the links under
+     it. The text never runs under the photo, so its line length stays constant. */
   @media (min-width: 44rem) {
-    .intro-text {
+    .intro-grid {
       grid-template-columns: minmax(0, 1fr) auto;
+      /* The last row absorbs any height difference, so the name's row stays tight */
+      grid-template-rows: auto auto 1fr;
       column-gap: clamp(2rem, 4vw, 3.5rem);
     }
 
-    /* The label, name, summary and links become rows of one grid, so the photo can start
-       level with the name rather than with the label above it */
-    .intro-head,
+    /* The label and the name become rows of the grid, so the photo can start level with the
+       name rather than with the label above it */
     .intro-title {
       display: contents;
     }
 
+    .intro-title > *,
+    .summary {
+      grid-column: 1;
+    }
+
     /* Keeps the label tight above the name despite the grid's row gap */
-    .intro-head .label {
+    .intro-title .label {
       margin-bottom: -0.6rem;
     }
 
-    .avatar {
+    .intro-aside {
+      display: flex;
+      flex-direction: column;
+      gap: 1.6rem;
       grid-column: 2;
-      grid-row: 2 / span 3;
-      align-self: start;
+      grid-row: 2 / span 2;
       /* Drops from the name's line box to the top of its capitals */
       margin-top: calc(var(--step-4) * 0.15);
+    }
+
+    .avatar {
       width: clamp(11rem, 17vw, 15rem);
       aspect-ratio: 4 / 5;
     }
@@ -381,9 +408,9 @@ const description =
       transform-origin: 50% 0%;
     }
 
-    .intro-title > *,
-    .intro-text > :not(.intro-head) {
-      grid-column: 1;
+    .intro-links {
+      flex-direction: column;
+      margin: 0;
     }
   }
 

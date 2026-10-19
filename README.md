@@ -23,6 +23,7 @@ The site is complete for a first version and builds cleanly (`npm run build`, `n
 **Font (19 October)**
 
 - Libertinus Serif replaces Inter for all text, chosen on a temporary trial page (since removed) against Latin Modern, STIX Two, Charter, EB Garamond, several screen serifs and sans. IBM Plex Mono stays for code.
+- Home intro: the Contact, GitHub and LinkedIn links now sit under the photo in the right column, one per line. Phones are unchanged (small headshot beside the name, links after the summary).
 
 **Still to do before publishing**
 
