@@ -34,9 +34,8 @@ The site is complete for a first version and builds cleanly (`npm run build`, `n
 - [ ] Then decide whether the intro role line changes to match the chosen resume.
 - [ ] Write the French resume (`src/content/resume/fr/<version>.yaml`).
 - [ ] Fix "comparable scores" in the PDF CV (contradicts D21), then replace `public/hassan-zbib-resume.pdf`.
-- [ ] Replace the lorem ipsum in the second paragraph of both profile files (shown greyed out).
 - [ ] Proofread the French text (drafted by Claude): profile, card summaries, both case studies, article summaries.
-- [ ] Check inferred details: role line ("Data scientist · NLP & data engineering"), project periods (Bitcoin 2025–2026, Rochondra 2026 – present, Rakuten/FloraFlow 2023, Cartofriches 2024), article reading times.
+- [ ] Check inferred details: project periods (Bitcoin 2025–2026, Rochondra 2026 – present, Rakuten/FloraFlow 2023, Cartofriches 2024), article reading times.
 - [ ] Commit `_sources/roadmap.md` to the Rochondra repository as `docs/roadmap.md` (the Rochondra case study links there).
 - [ ] Optionally delete `src/content/profile/photo_cv_small.jpg` (the site uses the resized copy `public/img/photo.jpg`).
 - [ ] Publish (see below).
