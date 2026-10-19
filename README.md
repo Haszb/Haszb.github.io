@@ -6,28 +6,26 @@ Personal portfolio of Hassan Zbib, in English (`/`) and French (`/fr/`). Built w
 
 The site is complete for a first version and builds cleanly (`npm run build`, `npm run check`: 0 errors). It has been checked in Firefox on desktop and phone widths, in light and dark mode. It is a local git repository (branch `main`, no remote yet) and **not yet published**.
 
-**Latest changes (16 October)**
+**Latest changes (19 October)**
 
-- Home page prototype: under the intro, a tab bar (Projects | Resume · LinkedIn | Resume · PDF | Writing | Contact) shows one section at a time; Projects opens by default. Each tab has its own URL (`/#writing`…). Two resume versions are being compared: one worded from the LinkedIn export, one from the PDF CV. Both offer the PDF for download. French pages show the English resume, marked "(en anglais)".
+- Version control: the folder is now a git repository. Claude proposes each commit and makes it only after Hassan confirms.
+- Font: Libertinus Serif replaces Inter for all text, chosen on a temporary trial page (since removed) against Latin Modern, STIX Two, Charter, EB Garamond, several screen serifs and sans. IBM Plex Mono stays for code.
+- Home intro: Email, GitHub, LinkedIn and Medium links now sit under the photo in the right column, one per line, each with its logo. Phones are unchanged (small headshot beside the name, links after the summary).
+- Contact tab removed, as the links under the photo carry the same information; the header's Contact link went with it (the footer still lists Email, GitHub, LinkedIn and Medium on every page).
+- Training project cards (Rakuten, Cartofriches, FloraFlow): new summaries, tags and pictures from Hassan, French versions translated by Claude. The FloraFlow Grad-CAM picture is now a 51 KB JPEG.
+- French profile retranslated from the current English one (new role line, five paragraphs, no more lorem ipsum); French Rochondra card brought in line with the English.
+
+**Earlier changes (16 October)**
+
+- Home page prototype: under the intro, a tab bar (Projects | Resume · LinkedIn | Resume · PDF | Writing) shows one section at a time; Projects opens by default. Each tab has its own URL (`/#writing`…). Two resume versions are being compared: one worded from the LinkedIn export, one from the PDF CV. Both offer the PDF for download. French pages show the English resume, marked "(en anglais)".
 - Tab bar restyled: plain centred labels on a single rule, the selected tab underlined in the accent colour (the shaded boxes were too busy).
 - One right edge on every page: the page frame narrowed from 72rem to 64rem and the content now fills it, so nothing stops short leaving a blank on the right. Text columns widened from 40rem to 46rem.
 - Resume: dates and place moved to a left column (like the article list); the text fills the column to their right and is justified on desktop.
-- Contact: each entry has a logo (envelope, LinkedIn, GitHub, Medium), laid out two by two on desktop.
-- Public email set to hassan.zb@gmail.com; Medium added to the Contact section.
+- Public email set to hassan.zb@gmail.com.
 - Checked on a real phone over the local network (see "Running locally").
-
-- Typography: Inter for all text (the Source Serif 4 body font was dropped), IBM Plex Mono for code. *(Superseded on 19 October by Libertinus Serif.)*
-- Home page: photo moved to the left of the introduction; introduction text slightly smaller.
 - Justified text on desktop and tablet (left-aligned on phones): home introduction, featured project cards, project page summaries and body paragraphs. Headings, lists, labels and the three small project cards stay left-aligned.
 
-**Font (19 October)**
-
-- Libertinus Serif replaces Inter for all text, chosen on a temporary trial page (since removed) against Latin Modern, STIX Two, Charter, EB Garamond, several screen serifs and sans. IBM Plex Mono stays for code.
-- Home intro: Email, GitHub, LinkedIn and Medium links now sit under the photo in the right column, one per line, each with its logo. Phones are unchanged (small headshot beside the name, links after the summary).
-- Contact tab removed, as the links under the photo carry the same information; the header's Contact link went with it (the footer still lists Email, GitHub, LinkedIn and Medium on every page).
-
 **Still to do before publishing**
-
 
 - [ ] Choose a resume version, then remove the other tab (`src/components/HomePage.astro`, `tabs` list) and its file in `src/content/resume/en/`.
 - [ ] Decide how the tab bar behaves on phones: it currently wraps onto two centred lines, and the selected tab's underline then floats between them. Proposed: one line that scrolls sideways (the script already keeps the selected tab in view). Choosing a single resume version also shortens the bar.
@@ -37,7 +35,7 @@ The site is complete for a first version and builds cleanly (`npm run build`, `n
 - [ ] Proofread the French text (drafted by Claude): profile, card summaries, both case studies, article summaries.
 - [ ] Check inferred details: project periods (Bitcoin 2025–2026, Rochondra 2026 – present, Rakuten/FloraFlow 2023, Cartofriches 2024), article reading times.
 - [ ] Commit `_sources/roadmap.md` to the Rochondra repository as `docs/roadmap.md` (the Rochondra case study links there).
-- [ ] Optionally delete `src/content/profile/photo_cv_small.jpg` (the site uses the resized copy `public/img/photo.jpg`).
+- [ ] Optionally delete `src/content/profile/photo_cv_small.jpg` (the site uses the resized copy `public/img/photo.jpg`; git ignores the original).
 - [ ] Publish (see below).
 
 ## What the site contains
