@@ -1,0 +1,130 @@
+---
+// Rochondra roadmap phases. Update `current` as phases are completed.
+import type { Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  current?: number;
+}
+
+const { lang, current = 1 } = Astro.props;
+const fr = lang === 'fr';
+
+const phases = fr
+  ? [
+      ['Preuve de concept', '210 whitepapers vérifiés à la main, mesurés et placés en déciles sur un site statique.'],
+      ['Nettoyage et enrichissement', 'Exploration du corpus, protocole de nettoyage figé, métadonnées gratuites.'],
+      ['Stabilisation et ingestion', 'Indicateurs vérifiés, schéma figé, tests et logs, ingestion de tout le corpus via l’API.'],
+      ['Lecture d’un document', 'Navigation par table des matières, résumé et sentiment par section.'],
+      ['Extension à GitBook', 'Le format des projets récents, pour rééquilibrer l’ère moderne dans le corpus.'],
+    ]
+  : [
+      ['Proof of concept', '210 hand-checked whitepapers, measured and placed in deciles on a static site.'],
+      ['Cleaning and enriching', 'Corpus exploration, a frozen cleaning protocol, free metadata sources.'],
+      ['Stabilisation and ingestion', 'Verified indicators, a frozen schema, tests and logging, the whole corpus ingested through the API.'],
+      ['Reading a single document', 'Navigation by table of contents, with a summary and sentiment for each section.'],
+      ['Extending to GitBook', 'The format of recent projects, to give the modern era its fair weight in the corpus.'],
+    ];
+const status = (i: number) => (i + 1 < current ? 'done' : i + 1 === current ? 'now' : 'next');
+const statusLabel = { done: fr ? 'Terminé' : 'Done', now: fr ? 'En cours' : 'In progress', next: '' };
+---
+
+<ol class="roadmap">
+  {
+    phases.map(([title, body], i) => (
+      <li class={status(i)}>
+        <span class="num mono">{i + 1}</span>
+        <div>
+          <p class="title">
+            {title}
+            {statusLabel[status(i)] && <span class="badge">{statusLabel[status(i)]}</span>}
+          </p>
+          <p class="body">{body}</p>
+        </div>
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .roadmap {
+    margin: 1.75rem 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0;
+  }
+
+  li {
+    display: grid;
+    grid-template-columns: 2rem minmax(0, 1fr);
+    gap: 1rem;
+    position: relative;
+    padding-bottom: 1.25rem;
+  }
+
+  li:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: calc(1rem - 0.5px);
+    top: 2rem;
+    bottom: 0.15rem;
+    width: 1px;
+    background: var(--rule);
+  }
+
+  .num {
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    border: 1px solid var(--rule-strong);
+    font-size: 0.82rem;
+    color: var(--muted);
+    background: var(--paper);
+  }
+
+  .now .num {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: var(--paper);
+  }
+
+  .done .num {
+    border-color: var(--ink-2);
+    color: var(--ink);
+  }
+
+  .title {
+    font-weight: 600;
+    padding-top: 0.2rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.6rem;
+  }
+
+  .next .title {
+    color: var(--ink-2);
+  }
+
+  .badge {
+    font-family: var(--serif);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .body {
+    margin-top: 0.2rem;
+    font-size: 0.98rem;
+    color: var(--ink-2);
+  }
+
+  .next .body {
+    color: var(--muted);
+  }
+</style>

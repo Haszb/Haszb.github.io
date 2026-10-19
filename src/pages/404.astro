@@ -1,0 +1,30 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { t } from '../i18n/ui';
+---
+
+<BaseLayout lang="en" title="404 · Hassan Zbib" description={t('en', 'notFound.body')}>
+  <section class="wrap nf">
+    <p class="label mono">404</p>
+    <h1>{t('en', 'notFound.title')}</h1>
+    <p>{t('en', 'notFound.body')} <span lang="fr">{t('fr', 'notFound.body')}</span></p>
+    <p><a class="arrow-link" href="/">{t('en', 'nav.home')}</a> &nbsp; <a class="arrow-link" href="/fr/" lang="fr">{t('fr', 'nav.home')}</a></p>
+  </section>
+</BaseLayout>
+
+<style>
+  .nf {
+    display: grid;
+    gap: 1rem;
+    padding-block: clamp(4rem, 12vw, 9rem);
+  }
+
+  h1 {
+    font-size: var(--step-3);
+  }
+
+  span {
+    display: block;
+    color: var(--muted);
+  }
+</style>

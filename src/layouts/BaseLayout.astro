@@ -1,0 +1,259 @@
+---
+import '../styles/global.css';
+import { getEntry } from 'astro:content';
+import { alternatePath, localePath, t, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+}
+
+const { lang, title, description } = Astro.props;
+const profile = await getEntry('profile', lang);
+if (!profile) throw new Error(`Missing src/content/profile/${lang}.md`);
+
+const other: Lang = lang === 'en' ? 'fr' : 'en';
+const path = Astro.url.pathname;
+const site = Astro.site ?? new URL('https://haszb.github.io');
+const canonical = new URL(path, site).href;
+const altHref = alternatePath(path, other);
+const home = localePath(lang, '/');
+const year = new Date().getFullYear();
+---
+
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang={lang} href={canonical} />
+    <link rel="alternate" hreflang={other} href={new URL(altHref, site).href} />
+    <link rel="alternate" hreflang="x-default" href={new URL(alternatePath(path, 'en'), site).href} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="color-scheme" content="light dark" />
+    <script is:inline>
+      // Apply a theme chosen with the header toggle before first paint (no flash)
+      try {
+        var saved = localStorage.getItem('theme');
+        if (saved === 'light' || saved === 'dark') document.documentElement.dataset.theme = saved;
+      } catch (e) {}
+    </script>
+    <meta name="theme-color" content="#f7f4ee" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#161512" media="(prefers-color-scheme: dark)" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={lang === 'fr' ? 'fr_FR' : 'en_GB'} />
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{lang === 'fr' ? 'Aller au contenu' : 'Skip to content'}</a>
+
+    <header class="site-header">
+      <div class="wrap bar">
+        <a class="brand" href={home}>{profile.data.name}</a>
+        <nav aria-label={lang === 'fr' ? 'Navigation principale' : 'Main navigation'}>
+          <ul>
+            <li><a href={`${home}#projects`}>{t(lang, 'nav.projects')}</a></li>
+            <li class="wide-only"><a href={`${home}#resume-linkedin`}>{t(lang, 'nav.resume')}</a></li>
+            <li class="wide-only"><a href={`${home}#writing`}>{t(lang, 'nav.writing')}</a></li>
+            <li><a href={`${home}#contact`}>{t(lang, 'nav.contact')}</a></li>
+            <li>
+              <button
+                class="theme"
+                type="button"
+                data-theme-toggle
+                data-label-light={lang === 'fr' ? 'Passer en thème clair' : 'Switch to light theme'}
+                data-label-dark={lang === 'fr' ? 'Passer en thème sombre' : 'Switch to dark theme'}
+                aria-label={lang === 'fr' ? 'Changer de thème' : 'Change theme'}
+              >
+                <svg class="icon-moon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                  <path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" />
+                </svg>
+                <svg class="icon-sun" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                  <circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.7" />
+                  <path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+                </svg>
+              </button>
+            </li>
+            <li>
+              <a class="lang" href={altHref} hreflang={other} lang={other} title={t(lang, 'lang.switchLabel')}>
+                {other.toUpperCase()}
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap foot">
+        <p>© {year} {profile.data.name}</p>
+        <ul>
+          <li><a href={`mailto:${profile.data.email}`}>{t(lang, 'contact.email')}</a></li>
+          <li><a href={profile.data.github}>GitHub</a></li>
+          <li><a href={profile.data.linkedin}>LinkedIn</a></li>
+          <li><a href={profile.data.medium}>Medium</a></li>
+        </ul>
+        <p class="built">{t(lang, 'footer.built')}</p>
+      </div>
+    </footer>
+    <script>
+      const root = document.documentElement;
+      const button = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
+      const dark = window.matchMedia('(prefers-color-scheme: dark)');
+      const current = () => root.dataset.theme ?? (dark.matches ? 'dark' : 'light');
+
+      function label() {
+        if (!button) return;
+        const next = current() === 'dark' ? 'light' : 'dark';
+        const text = button.dataset[next === 'light' ? 'labelLight' : 'labelDark'] ?? '';
+        button.setAttribute('aria-label', text);
+        button.title = text;
+      }
+
+      button?.addEventListener('click', () => {
+        const next = current() === 'dark' ? 'light' : 'dark';
+        root.dataset.theme = next;
+        try {
+          localStorage.setItem('theme', next);
+        } catch {
+          /* storage unavailable: the choice lasts for this page only */
+        }
+        label();
+        window.dispatchEvent(new CustomEvent('themechange'));
+      });
+      dark.addEventListener('change', label);
+      label();
+    </script>
+  </body>
+</html>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: color-mix(in srgb, var(--paper) 88%, transparent);
+    backdrop-filter: saturate(1.4) blur(10px);
+    -webkit-backdrop-filter: saturate(1.4) blur(10px);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 3.6rem;
+  }
+
+  .brand {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 1.08rem;
+    text-decoration: none;
+    letter-spacing: -0.005em;
+    white-space: nowrap;
+  }
+
+  nav ul {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.85rem, 2.5vw, 1.75rem);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--serif);
+    font-size: 0.9rem;
+  }
+
+  nav a {
+    text-decoration: none;
+    color: var(--ink-2);
+  }
+
+  nav a:hover {
+    color: var(--accent);
+  }
+
+  .theme {
+    display: grid;
+    place-items: center;
+    width: 1.9rem;
+    height: 1.9rem;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: var(--radius);
+    background: none;
+    color: var(--ink-2);
+    cursor: pointer;
+  }
+
+  .theme:hover {
+    color: var(--accent);
+    border-color: var(--rule);
+  }
+
+  .lang {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    font-weight: 500;
+    padding: 0.28rem 0.45rem;
+    border: 1px solid var(--rule-strong);
+    border-radius: var(--radius);
+  }
+
+  @media (max-width: 30rem) {
+    nav li.wide-only {
+      display: none;
+    }
+  }
+
+  .site-footer {
+    border-top: 1px solid var(--rule);
+    padding-block: 2.25rem 2.75rem;
+    font-family: var(--serif);
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+
+  .foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.75rem 2rem;
+  }
+
+  .foot ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .foot a {
+    text-decoration: none;
+  }
+
+  .built {
+    margin-left: auto;
+  }
+
+  @media (max-width: 40rem) {
+    .built {
+      margin-left: 0;
+      width: 100%;
+    }
+  }
+</style>

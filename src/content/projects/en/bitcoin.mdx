@@ -1,0 +1,93 @@
+---
+title: Bitcoin price analysis
+kicker: Time series · Deep learning · Personal project
+summary: Can price history alone forecast Bitcoin? The project took that question end to end, from a data pipeline and market analysis to 168 tracked neural-network runs. The answer was no, and that negative result is where Rochondra began.
+featured: true
+page: true
+order: 2
+period: 2025 – 2026
+context: Solo project
+stack: [Python, pandas, TensorFlow, Keras, scikit-learn, MLflow, Plotly, Dash]
+links:
+  - label: Repository
+    href: https://github.com/Haszb/bitcoin_price_analysis
+  - label: 'Article: A new direction'
+    href: https://medium.com/@rochondra.lab/a-new-direction-89003b3017d9
+---
+import Chart from '../../../components/Chart.astro';
+import Stats from '../../../components/Stats.astro';
+
+## The question
+
+Most Bitcoin forecasting examples predict one step at a time and are corrected with the true price after every step, which makes them look better than they would in real use. This project asked a harder question: **does the price history of BTC/USDT, on its own, contain a signal a model can exploit when it has to rely on its own predictions?**
+
+## The data
+
+The first step was a reliable, automated pipeline pulling hourly candles from Binance, followed by an exploratory analysis of the market from January 2022 to October 2025. Beyond price, it covered volumes, trade counts, buyer and seller pressure, trade-size distributions and normalised volatility.
+
+<Stats
+  items={[
+    { value: '~33,000', label: 'hourly observations, no gaps' },
+    { value: '2022–2025', label: 'BTC/USDT on Binance' },
+    { value: '4', label: 'distinct market phases' },
+  ]}
+/>
+
+<Chart
+  kind="price"
+  lang="en"
+  label="Daily closing price of Bitcoin from 2022 to 2025, with four shaded market phases"
+  caption="Bitcoin closing price, one point per day. The four phases found in the analysis are numbered and shaded: (1) a range then a sell-off in 2022, (2) consolidation around $20,000, (3) a gradual recovery through 2023, and (4) the acceleration to a peak above $120,000."
+  source="Source: Binance hourly candles."
+/>
+
+The analysis pointed to a market driven mostly by small trades, with few signs of large players on this platform, and a recurring yearly rhythm in trade sizes. It also found that **2025 breaks the pattern**. The usual seasonality disappears, and trades get smaller even as the price climbs. That break was the reason the models were trained on 2025 data only.
+
+<Chart
+  kind="heatmap"
+  lang="en"
+  height={300}
+  label="Heatmap of median trade size by month and year, 2022 to 2025"
+  caption="Median trade size in USDT, by month and year. In 2022–2024 the first half of the year runs higher than the second. In 2025 trade sizes stay low all year."
+/>
+
+## The experiment
+
+The models were recurrent neural networks (LSTM, GRU and SimpleRNN) evaluated with **autoregressive walk-forward prediction**. After a 24-hour window of real prices, each new forecast is built only from the model's own earlier forecasts, as it would be in real use. The data was split chronologically to rule out leakage, and seeds were fixed so that every run is reproducible.
+
+<Chart
+  kind="walkforward"
+  lang="en"
+  label="Walk-forward forecast of a two-layer LSTM compared with actual prices, September 2025"
+  caption="A typical result from a two-layer LSTM. After 24 hours of real context, the forecast drifts towards a flat line while the actual price keeps moving. MAE was 2,879 USDT and RMSE 3,386 USDT over the 12-day test window."
+/>
+
+Averaged metrics such as MAE and RMSE hide how a multi-step forecast drifts over time, and a model can land near the true price by chance just by following the general trend. The error was therefore also tracked step by step (absolute percentage error), and every run was inspected visually.
+
+To rule out a bad configuration, seven hyperparameters were varied one at a time (input window, batch size, learning rate, units, dropout, depth and loss function) across the three architectures, first on raw prices and then on log-returns, which are more stationary. That came to **168 runs, all tracked in MLflow**. A Dash dashboard was built to compare them side by side, and it is rebuilt below so it runs in the browser with no server.
+
+<Chart
+  kind="grid"
+  lang="en"
+  label="Small-multiple charts comparing forecasts across values of one hyperparameter"
+  caption="Pick a data representation, an architecture and a hyperparameter. Each panel shows one value of that hyperparameter, with the real prices the model starts from (green, as long as the input window), the actual price (blue) and the forecast (red)."
+  source="Data: the 168 runs logged by the experiment, exported from MLflow."
+/>
+
+## The result
+
+No configuration found an exploitable signal.
+
+- **LSTM** models consistently gave up on volatility and converged towards a stable mean, the typical response to a non-stationary series.
+- **GRU** models did the same about half the time. The other half oscillated in a way that looks meaningful but is simply the initial sequence repeated.
+- **SimpleRNN** produced the widest range of behaviour, from repeated patterns to unrealistic trajectories, with nothing convincing among them.
+
+Switching to log-returns made the series more stationary but did not change the conclusion. Flat lines settled near zero, and the oscillations replayed the input.
+
+## Why it led to Rochondra
+
+Price is an output. It is driven by information that the series itself does not contain. If no usable signal turns up in the history of the most liquid crypto asset, younger and more volatile ones are unlikely to do better. Adding outside variables would have meant entering a crowded field where a one-person project has little to add.
+
+So the project turned around: stop predicting the output and **measure the inputs**, the traces a project leaves behind as it is built, starting with its whitepaper. That decision is the first entry in Rochondra's decision log, and the reasoning is told in full in [Why I stopped predicting Bitcoin prices](https://medium.com/@rochondra.lab/a-new-direction-89003b3017d9).
+
+<p><a class="arrow-link" href="/projects/rochondra/">Continue with Rochondra</a></p>

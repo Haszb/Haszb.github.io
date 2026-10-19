@@ -1,0 +1,83 @@
+---
+// One entry from the Rochondra decision log, linked to its full text on GitHub.
+// Usage in MDX: <Decision id="D6" title="..." anchor="d6-deterministic-first-the-llm-as-arbiter">body</Decision>
+interface Props {
+  id: string;
+  title: string;
+  anchor: string;
+  cost?: string;
+  costLabel?: string;
+}
+
+const { id, title, anchor, cost, costLabel = 'Cost accepted' } = Astro.props;
+const href = `https://github.com/Haszb/Rochondra/blob/main/docs/decision-log.md#${anchor}`;
+---
+
+<section class="decision">
+  <header>
+    <a class="id mono" href={href} aria-label={`${id} in the decision log`}>{id}</a>
+    <h4>{title}</h4>
+  </header>
+  <div class="body">
+    <slot />
+  </div>
+  {
+    cost && (
+      <p class="cost">
+        <span class="label">{costLabel}</span> {cost}
+      </p>
+    )
+  }
+</section>
+
+<style>
+  .decision {
+    display: grid;
+    gap: 0.6rem;
+    padding: 1.1rem 1.25rem 1.2rem;
+    border-left: 2px solid var(--accent);
+    background: var(--paper-2);
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+
+  .decision + :global(.decision) {
+    margin-top: 1rem;
+  }
+
+  header {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+  }
+
+  .id {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  h4 {
+    font-size: var(--step-0);
+    font-weight: 600;
+  }
+
+  .body {
+    color: var(--ink-2);
+    font-size: 1rem;
+  }
+
+  .body :global(p + p) {
+    margin-top: 0.6em;
+  }
+
+  .cost {
+    font-family: var(--serif);
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+
+  .cost .label {
+    margin-right: 0.35rem;
+  }
+</style>

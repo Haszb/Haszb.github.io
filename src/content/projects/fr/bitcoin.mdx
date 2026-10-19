@@ -1,0 +1,93 @@
+---
+title: Analyse du prix du Bitcoin
+kicker: Séries temporelles · Deep learning · Projet personnel
+summary: L’historique des prix suffit-il à prévoir le Bitcoin ? Le projet a traité cette question de bout en bout, du pipeline de données et de l’analyse du marché jusqu’à 168 entraînements de réseaux de neurones suivis. La réponse est non, et c’est ce résultat négatif qui a donné naissance à Rochondra.
+featured: true
+page: true
+order: 2
+period: 2025 – 2026
+context: Projet solo
+stack: [Python, pandas, TensorFlow, Keras, scikit-learn, MLflow, Plotly, Dash]
+links:
+  - label: Dépôt
+    href: https://github.com/Haszb/bitcoin_price_analysis
+  - label: 'Article : A new direction (en anglais)'
+    href: https://medium.com/@rochondra.lab/a-new-direction-89003b3017d9
+---
+import Chart from '../../../components/Chart.astro';
+import Stats from '../../../components/Stats.astro';
+
+## La question
+
+La plupart des exemples de prévision du Bitcoin prédisent un pas à la fois et sont corrigés avec le vrai prix après chaque pas, ce qui les fait paraître meilleurs qu’ils ne le seraient en conditions réelles. Ce projet posait une question plus exigeante : **l’historique du prix BTC/USDT contient-il, à lui seul, un signal qu’un modèle peut exploiter lorsqu’il doit s’appuyer sur ses propres prédictions ?**
+
+## Les données
+
+La première étape a été un pipeline fiable et automatisé qui récupère les bougies horaires de Binance, suivi d’une analyse exploratoire du marché de janvier 2022 à octobre 2025. Au-delà du prix, elle couvrait les volumes, le nombre de transactions, la pression acheteurs et vendeurs, la distribution de la taille des transactions et la volatilité normalisée.
+
+<Stats
+  items={[
+    { value: '~33 000', label: 'observations horaires, sans trou' },
+    { value: '2022–2025', label: 'BTC/USDT sur Binance' },
+    { value: '4', label: 'phases de marché distinctes' },
+  ]}
+/>
+
+<Chart
+  kind="price"
+  lang="fr"
+  label="Prix de clôture quotidien du Bitcoin de 2022 à 2025, avec quatre phases de marché ombrées"
+  caption="Prix de clôture du Bitcoin, un point par jour. Les quatre phases identifiées par l’analyse sont numérotées et ombrées : (1) un range puis une chute en 2022, (2) une consolidation autour de 20 000 $, (3) une reprise progressive en 2023, puis (4) l’accélération jusqu’à un sommet au-delà de 120 000 $."
+  source="Source : bougies horaires Binance."
+/>
+
+L’analyse a mis en évidence un marché porté surtout par de petites transactions, avec peu de traces de gros acteurs sur cette plateforme, et un rythme annuel récurrent dans la taille des transactions. Elle a aussi montré que **2025 rompt avec ce schéma**. La saisonnalité habituelle disparaît, et les transactions rapetissent alors même que le prix grimpe. C’est cette rupture qui a conduit à entraîner les modèles sur les seules données de 2025.
+
+<Chart
+  kind="heatmap"
+  lang="fr"
+  height={300}
+  label="Carte de chaleur de la taille médiane des transactions par mois et par année, 2022 à 2025"
+  caption="Taille médiane des transactions en USDT, par mois et par année. De 2022 à 2024, le premier semestre est plus élevé que le second. En 2025, les montants restent bas toute l’année."
+/>
+
+## L’expérience
+
+Les modèles étaient des réseaux de neurones récurrents (LSTM, GRU et SimpleRNN) évalués en **prédiction walk-forward autorégressive**. Après une fenêtre de 24 heures de prix réels, chaque nouvelle prévision repose uniquement sur les prévisions précédentes du modèle, comme en conditions réelles. Les données ont été découpées chronologiquement pour éviter toute fuite, et les graines aléatoires fixées pour que chaque entraînement soit reproductible.
+
+<Chart
+  kind="walkforward"
+  lang="fr"
+  label="Prévision walk-forward d’un LSTM à deux couches comparée aux prix réels, septembre 2025"
+  caption="Un résultat typique, obtenu avec un LSTM à deux couches. Après 24 heures de contexte réel, la prévision dérive vers une ligne plate alors que le prix réel continue de bouger. MAE de 2 879 USDT et RMSE de 3 386 USDT sur les 12 jours de test."
+/>
+
+Les métriques moyennées comme la MAE ou la RMSE masquent la dérive d’une prévision à plusieurs pas, et un modèle peut tomber près du vrai prix par hasard, simplement en suivant la tendance générale. L’erreur a donc aussi été suivie pas à pas (erreur absolue en pourcentage), et chaque entraînement a été inspecté visuellement.
+
+Pour écarter l’hypothèse d’une mauvaise configuration, sept hyperparamètres ont été variés un à un (fenêtre d’entrée, taille de batch, taux d’apprentissage, unités, dropout, profondeur et fonction de perte) sur les trois architectures, d’abord sur les prix bruts puis sur les log-rendements, plus stationnaires. Cela représente **168 entraînements, tous suivis dans MLflow**. Un tableau de bord Dash a été construit pour les comparer côte à côte, et il est reconstruit ci-dessous pour tourner dans le navigateur, sans serveur.
+
+<Chart
+  kind="grid"
+  lang="fr"
+  label="Petits graphiques multiples comparant les prévisions selon les valeurs d’un hyperparamètre"
+  caption="Choisissez une représentation des données, une architecture et un hyperparamètre. Chaque panneau montre une valeur de cet hyperparamètre, avec les prix réels dont part le modèle (vert, de la longueur de la fenêtre d’entrée), le prix réel (bleu) et la prévision (rouge)."
+  source="Données : les 168 entraînements consignés par l’expérience, exportés depuis MLflow."
+/>
+
+## Le résultat
+
+Aucune configuration n’a trouvé de signal exploitable.
+
+- Les **LSTM** ont systématiquement renoncé à suivre la volatilité pour converger vers une moyenne stable, réaction typique face à une série non stationnaire.
+- Les **GRU** ont fait de même environ une fois sur deux. L’autre moitié oscillait d’une manière qui semble porteuse de sens, mais qui ne fait que répéter la séquence initiale.
+- Les **SimpleRNN** ont produit la plus grande variété de comportements, des motifs répétés aux trajectoires irréalistes, sans rien de convaincant.
+
+Passer aux log-rendements a rendu la série plus stationnaire sans changer la conclusion. Les lignes plates se sont centrées sur zéro, et les oscillations rejouaient l’entrée.
+
+## Pourquoi cela a mené à Rochondra
+
+Le prix est une variable de sortie. Il dépend d’informations que la série elle-même ne contient pas. Si l’historique de l’actif crypto le plus liquide ne livre aucun signal exploitable, il est peu probable que des actifs plus jeunes et plus volatils fassent mieux. Ajouter des variables externes aurait signifié entrer dans un domaine très concurrentiel, où un projet mené seul a peu à apporter.
+
+Le projet a donc changé de cap : cesser de prédire la sortie et **mesurer les entrées**, c’est-à-dire les traces qu’un projet laisse en se construisant, à commencer par son whitepaper. Cette décision est la première du journal des décisions de Rochondra, et le raisonnement complet est détaillé dans [Why I stopped predicting Bitcoin prices](https://medium.com/@rochondra.lab/a-new-direction-89003b3017d9) (en anglais).
+
+<p><a class="arrow-link" href="/fr/projects/rochondra/">Continuer avec Rochondra</a></p>

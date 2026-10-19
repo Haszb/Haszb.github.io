@@ -1,0 +1,80 @@
+# Resume, "PDF" version: worded from _sources/Hassan Zbib_resume-1.pdf.
+# The Rochondra entry follows the decision log (no scores, D21), not the PDF.
+#
+# Quote any value that contains a colon followed by a space, or the file breaks silently.
+# To add a role, copy a block under `experience` (from `- company:` to the end of its bullets).
+
+# Path to the PDF offered by the Download button (the file lives in public/).
+pdf: /hassan-zbib-resume.pdf
+
+availability: France · EU citizen · Open to relocation and remote
+
+summary: >-
+  I run projects end to end: requirements gathering, scoping, and delivery across multiple
+  stakeholders and providers. A Machine Learning Engineering & AI Project Management degree gives
+  me the technical fluency to specify and prioritise AI products, not just coordinate them.
+
+experience:
+  - company: Rochondra Lab
+    title: Founder & Product Owner
+    period: Feb 2026 – Present
+    place: Remote, France
+    intro: >-
+      Building a tool that places a crypto project’s whitepaper on measured indicators against
+      thousands of others, without scores or recommendations.
+    bullets:
+      - Defined scope and roadmap within a five-pillar evaluation framework, prioritising documentation as the MVP
+      - Evaluated cost vs. quality trade-offs across the stack, balancing hosted AI services against self-hosted models to keep prototype spend sustainable
+      - Designed the prototype around the end product, anticipating the storage and analysis needs of a later deployment
+      - Translated academic research (Journal of Banking & Finance, Management Science) into product requirements and evaluation indicators, and into articles for a non-specialist audience
+
+  - company: TELUS Digital AI
+    title: Data Quality Analyst
+    period: Feb 2025 – Sep 2025
+    place: Remote, France
+    bullets:
+      - Evaluated AI/LLM outputs against product quality guidelines across multilingual and multimodal use cases, developing a practical sense of what “good” looks like for AI-driven products in production
+      - Expanded scope to new task types (geolocation, generative AI across image, text and audio) through continuous upskilling, gaining direct exposure to how AI products get evaluated at scale
+
+  - company: Fox Security
+    title: Project Manager
+    period: Nov 2020 – Sep 2022
+    place: Brest, France
+    bullets:
+      - Gathered and translated stakeholder requirements (direct clients and public tenders) into technical specifications, aligning them against sector-specific constraints across France and Europe
+      - Owned delivery end to end, consolidating input from multiple specialised providers into unified documentation and coordinating written and physical deliverables
+      - Closed the loop with client-facing teams by relaying structured findings back, keeping proposals accurate and on schedule
+
+  - company: KZ International Group
+    title: Project Coordinator
+    period: May 2017 – Sep 2020
+    place: Brest, France
+    bullets:
+      - Identified inefficiencies in warehouse operations and drove a 15% cost reduction by streamlining processes and renegotiating supplier terms
+      - Coordinated cross-functional seasonal teams of up to 12 people, managing day-to-day operational trade-offs (receiving, storage, staffing)
+
+education:
+  - school: DataScientest, certified by Mines Paris – PSL
+    degree: EQF Level 7 (Master’s level), Machine Learning Engineering & AI Project Management
+    period: Aug 2023 – Jun 2024
+    place: Remote, France
+    details: 'Specialisation: Data Science, MLOps, AI Project Management, Agile Methodology'
+
+  - school: European Institute for Marine Studies
+    degree: MSc Chemistry of the Marine Environment
+    period: Sep 2010 – Jun 2012
+    place: Brest, France
+
+skills:
+  - label: Certifications
+    items: AWS Solutions Architect (SAA-C03)
+  - label: Product & project management
+    items: Requirements gathering, user stories, MVP scoping, Agile/Scrum, Jira
+  - label: Technical
+    items: Python, SQL, NLP/LLM (Hugging Face), cloud (AWS), MLOps
+  - label: Soft skills
+    items: Stakeholder management, team coordination, problem solving, communication, adaptability
+  - label: Languages
+    items: French (native), English (bilingual)
+  - label: Interests
+    items: Karate, hiking, reading, travelling

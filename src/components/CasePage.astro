@@ -1,0 +1,179 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ArticleList from './ArticleList.astro';
+import { localePath, t, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  project: CollectionEntry<'projects'>;
+}
+
+const { lang, project } = Astro.props;
+const slug = project.id.split('/')[1];
+const d = project.data;
+const { Content } = await render(project);
+
+const related = (await getCollection('articles', ({ data }) => data.project === slug)).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+);
+---
+
+<BaseLayout lang={lang} title={`${d.title} · Hassan Zbib`} description={d.summary}>
+  <article class="case">
+    <header class="wrap head">
+      <a class="back meta" href={`${localePath(lang, '/')}#projects`}>← {t(lang, 'case.back')}</a>
+      <p class="label">{d.kicker}</p>
+      <h1>{d.title}</h1>
+      <p class="lede justified">{d.summary}</p>
+    </header>
+
+    <div class="wrap layout">
+      <aside class="facts" aria-label={lang === 'fr' ? 'Fiche du projet' : 'Project facts'}>
+        <dl>
+          <div>
+            <dt class="label">{t(lang, 'case.period')}</dt>
+            <dd class="mono">{d.period}</dd>
+          </div>
+          {
+            (d.context || d.team) && (
+              <div>
+                <dt class="label">{t(lang, 'case.context')}</dt>
+                <dd>{[d.context, d.team].filter(Boolean).join(' · ')}</dd>
+              </div>
+            )
+          }
+          <div>
+            <dt class="label">{t(lang, 'case.stack')}</dt>
+            <dd>
+              <ul class="tags">{d.stack.map((s) => <li>{s}</li>)}</ul>
+            </dd>
+          </div>
+          {
+            d.links.length > 0 && (
+              <div>
+                <dt class="label">{t(lang, 'case.links')}</dt>
+                <dd>
+                  <ul class="links">
+                    {d.links.map((l) => (
+                      <li>
+                        <a class="arrow-link" data-external href={l.href}>
+                          {l.label}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </dd>
+              </div>
+            )
+          }
+        </dl>
+      </aside>
+
+      <div class="prose content">
+        <Content />
+
+        {
+          related.length > 0 && (
+            <section class="related">
+              <h2>{t(lang, 'case.related')}</h2>
+              <ArticleList lang={lang} articles={related} compact />
+            </section>
+          )
+        }
+      </div>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .head {
+    display: grid;
+    gap: 1rem;
+    padding-block: clamp(2.25rem, 6vw, 4rem) clamp(2rem, 5vw, 3.25rem);
+  }
+
+  .back {
+    text-decoration: none;
+    justify-self: start;
+    margin-bottom: 0.75rem;
+  }
+
+  h1 {
+    font-size: var(--step-4);
+    letter-spacing: -0.025em;
+    line-height: 1.02;
+    max-width: 20ch;
+  }
+
+  .lede {
+    max-width: var(--measure);
+    font-size: var(--step-1);
+    line-height: 1.5;
+    color: var(--ink-2);
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 14rem minmax(0, 1fr);
+    gap: clamp(2rem, 5vw, 4.5rem);
+    padding-bottom: clamp(3rem, 8vw, 6rem);
+    border-top: 1px solid var(--rule);
+    padding-top: clamp(2rem, 4vw, 3rem);
+  }
+
+  .facts dl {
+    position: sticky;
+    top: 5.5rem;
+    display: grid;
+    gap: 1.4rem;
+    margin: 0;
+  }
+
+  .facts dd {
+    margin: 0.4rem 0 0;
+    font-family: var(--serif);
+    font-size: var(--step--1);
+    color: var(--ink-2);
+  }
+
+  .links {
+    display: grid;
+    gap: 0.45rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .content {
+    min-width: 0;
+  }
+
+  .content > :global(:first-child) {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .related {
+    margin-top: 3.5rem;
+  }
+
+  .related h2 {
+    font-size: var(--step-1);
+    margin-bottom: 1rem;
+  }
+
+  @media (max-width: 60rem) {
+    .layout {
+      grid-template-columns: 1fr;
+    }
+
+    .facts dl {
+      position: static;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+  }
+</style>

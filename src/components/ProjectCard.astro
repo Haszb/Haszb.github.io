@@ -1,0 +1,118 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import type { Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  project: CollectionEntry<'projects'>;
+}
+
+const { project } = Astro.props;
+const d = project.data;
+const primary = d.links[0];
+---
+
+<article class="card">
+  {
+    d.cover && (
+      <a class="cover" href={primary?.href} tabindex="-1" aria-hidden="true">
+        <img src={d.cover} alt="" loading="lazy" decoding="async" />
+      </a>
+    )
+  }
+  <div class="body">
+    <p class="label">{d.kicker} · <span class="mono">{d.period}</span></p>
+    <h4>{primary ? <a href={primary.href}>{d.title}</a> : d.title}</h4>
+    <p class="meta">{[d.context, d.team].filter(Boolean).join(' · ')}</p>
+    <p class="summary">{d.summary}</p>
+    <ul class="tags">{d.stack.map((s) => <li>{s}</li>)}</ul>
+    <p class="links">
+      {
+        d.links.map((l) => (
+          <a class="arrow-link" data-external href={l.href}>
+            {l.label}
+          </a>
+        ))
+      }
+    </p>
+  </div>
+</article>
+
+<style>
+  .card {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    border: 1px solid var(--rule);
+    border-radius: calc(var(--radius) * 1.5);
+    overflow: hidden;
+    background: var(--paper);
+    transition: border-color 0.2s ease;
+  }
+
+  .card:hover {
+    border-color: var(--rule-strong);
+  }
+
+  .cover {
+    display: block;
+    aspect-ratio: 16 / 9;
+    background: #fff;
+    border-bottom: 1px solid var(--rule);
+    overflow: hidden;
+  }
+
+  .cover img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform 0.4s ease;
+  }
+
+  .card:hover .cover img {
+    transform: scale(1.025);
+  }
+
+  .cover img {
+    filter: var(--img-filter, none);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cover img {
+      transition: none;
+    }
+  }
+
+  .body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    padding: 1.25rem 1.25rem 1.4rem;
+  }
+
+  h4 {
+    font-size: var(--step-1);
+  }
+
+  h4 a {
+    text-decoration: none;
+  }
+
+  .meta {
+    margin-top: -0.35rem;
+  }
+
+  .summary {
+    font-size: 0.98rem;
+    line-height: 1.55;
+    color: var(--ink-2);
+  }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.25rem;
+    margin-top: auto;
+    padding-top: 0.3rem;
+  }
+</style>

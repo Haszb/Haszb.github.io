@@ -1,0 +1,190 @@
+---
+// Interactive chart with a static image fallback (shown without JavaScript, or until the chart is drawn).
+// Usage in MDX: <Chart kind="price" lang="en" caption="..." />
+import price from '../data/btc/price.json';
+import heatmap from '../data/btc/heatmap.json';
+import walkforward from '../data/btc/walkforward.json';
+import gridIndex from '../data/btc/grid-index.json';
+import { t, type Lang } from '../i18n/ui';
+
+type Kind = 'price' | 'heatmap' | 'walkforward' | 'grid';
+
+interface Props {
+  kind: Kind;
+  lang: Lang;
+  caption: string;
+  source?: string;
+  label: string;
+  height?: number;
+}
+
+const { kind, lang, caption, source, label, height = 380 } = Astro.props;
+const inline: Partial<Record<Kind, unknown>> = { price, heatmap, walkforward };
+const fallback: Record<Kind, string> = {
+  price: '/img/btc/price.png',
+  heatmap: '/img/btc/heatmap.png',
+  walkforward: '/img/btc/walkforward.png',
+  grid: '/img/btc/grid-lstm.png',
+};
+
+const fr = lang === 'fr';
+const params: Record<string, [string, string]> = {
+  input_width: ['Input window', 'Fenêtre d’entrée'],
+  batch_size: ['Batch size', 'Taille de batch'],
+  learning_rate: ['Learning rate', 'Taux d’apprentissage'],
+  model_units: ['Units per layer', 'Unités par couche'],
+  dropout_rate: ['Dropout', 'Dropout'],
+  number_of_layer: ['Layers', 'Couches'],
+  loss_function: ['Loss function', 'Fonction de perte'],
+};
+const paramOrder = Object.keys(params);
+const index = gridIndex as Record<string, Record<string, string[]>>;
+const available = paramOrder.filter((p) => index.normal_value?.lstm?.includes(p));
+---
+
+<figure class="chart-figure bleed-soft" data-kind={kind}>
+  {
+    kind === 'grid' && (
+      <form class="grid-controls" aria-label={fr ? 'Choisir une série d’expériences' : 'Choose a set of runs'}>
+        <label>
+          <span class="label">{fr ? 'Données' : 'Data'}</span>
+          <select name="dataset">
+            <option value="normal_value">{fr ? 'Prix bruts' : 'Raw prices'}</option>
+            <option value="log_return">{fr ? 'Log-rendements' : 'Log-returns'}</option>
+          </select>
+        </label>
+        <label>
+          <span class="label">{fr ? 'Architecture' : 'Architecture'}</span>
+          <select name="model">
+            <option value="lstm">LSTM</option>
+            <option value="gru">GRU</option>
+            <option value="simplernn">SimpleRNN</option>
+          </select>
+        </label>
+        <label>
+          <span class="label">{fr ? 'Hyperparamètre' : 'Hyperparameter'}</span>
+          <select name="param">
+            {available.map((p) => (
+              <option value={p} selected={p === 'loss_function'}>
+                {params[p][fr ? 1 : 0]}
+              </option>
+            ))}
+          </select>
+        </label>
+      </form>
+    )
+  }
+  <div class="stage" style={kind === 'grid' ? undefined : `--h:${height}px`}>
+    <img class="fallback" src={fallback[kind]} alt={`${t(lang, 'chart.fallback')}: ${label}`} loading="lazy" decoding="async" />
+    <div class="plot" data-chart={kind} data-base="/data/btc-grid/" role="img" aria-label={label}>
+      {inline[kind] && <script type="application/json" set:html={JSON.stringify(inline[kind])} />}
+    </div>
+    <p class="loading meta" aria-hidden="true">{t(lang, 'chart.loading')}</p>
+  </div>
+  <figcaption>
+    <span>{caption}</span>
+    {source && <span class="source"> {source}</span>}
+  </figcaption>
+</figure>
+
+<script>
+  import '../scripts/charts';
+</script>
+
+<style>
+  .chart-figure {
+    margin: 2rem 0;
+    padding: clamp(0.75rem, 2vw, 1.25rem);
+    border: 1px solid var(--rule);
+    border-radius: calc(var(--radius) * 1.5);
+    background: var(--paper);
+  }
+
+  .stage {
+    position: relative;
+  }
+
+  .plot {
+    width: 100%;
+    height: var(--h, auto);
+    display: none;
+  }
+
+  .fallback {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+    background: #fff;
+  }
+
+  .loading {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
+    margin: 0;
+    padding: 0.4rem 0.8rem;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+  }
+
+  .chart-figure[aria-busy='true'] .loading {
+    opacity: 1;
+  }
+
+  .chart-figure.is-ready .plot {
+    display: block;
+  }
+
+  .chart-figure.is-ready .fallback {
+    display: none;
+  }
+
+  figcaption {
+    margin-top: 0.85rem;
+    font-family: var(--serif);
+    font-size: var(--step--1);
+    line-height: 1.5;
+    color: var(--ink-2);
+  }
+
+  .source {
+    color: var(--muted);
+  }
+
+  .grid-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.25rem;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .grid-controls label {
+    display: grid;
+    gap: 0.3rem;
+    flex: 1 1 10rem;
+  }
+
+  select {
+    font: inherit;
+    font-family: var(--serif);
+    font-size: 0.92rem;
+    color: var(--ink);
+    background: var(--paper-2);
+    border: 1px solid var(--rule-strong);
+    border-radius: var(--radius);
+    padding: 0.45rem 0.6rem;
+    min-width: 0;
+  }
+
+  .chart-figure:not(.is-ready) .grid-controls {
+    opacity: 0.55;
+  }
+</style>

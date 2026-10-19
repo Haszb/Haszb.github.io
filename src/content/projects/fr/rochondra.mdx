@@ -1,0 +1,90 @@
+---
+title: Rochondra
+kicker: NLP · Data engineering · Projet personnel
+summary: Mesurer les whitepapers crypto plutôt que les noter. Le projet réunit un corpus de 5 880 documents, des indicateurs issus de la recherche académique et un pipeline conçu pour tourner de la même façon en local et dans le cloud.
+featured: true
+page: true
+order: 1
+period: 2026 – aujourd’hui
+context: Projet solo
+stack: [Python, FastAPI, PyMuPDF, PostgreSQL, Redis, MinIO, Docker, FinBERT, LLM locaux, Streamlit]
+links:
+  - label: Dépôt
+    href: https://github.com/Haszb/Rochondra
+  - label: Note de cadrage (en anglais)
+    href: https://github.com/Haszb/Rochondra/blob/main/docs/project-brief.md
+  - label: Journal des décisions (en anglais)
+    href: https://github.com/Haszb/Rochondra/blob/main/docs/decision-log.md
+  - label: Feuille de route (en anglais)
+    href: https://github.com/Haszb/Rochondra/blob/main/docs/roadmap.md
+---
+import Stats from '../../../components/Stats.astro';
+import EraBar from '../../../components/EraBar.astro';
+import Architecture from '../../../components/Architecture.astro';
+import Decision from '../../../components/Decision.astro';
+import Roadmap from '../../../components/Roadmap.astro';
+
+## Le problème
+
+Sur un marché non régulé, le whitepaper est l’un des rares signaux de qualité disponibles avant qu’un projet ne lève des fonds, et l’un des plus coûteux à falsifier pour un projet faible. Il reste pourtant largement ignoré. Environ la moitié des investisseurs le consultent, un tiers tentent de l’analyser, et beaucoup manquent du temps ou de l’expertise nécessaires pour en venir à bout.
+
+Les analystes s’en passent souvent aussi. Ils jugent ce qui se voit facilement (l’équipe, la communauté, les réseaux sociaux), et leurs notes penchent vers l’optimisme, car une bonne note sur un projet qui réussit leur apporte des missions de conseil sur le suivant. Deux tiers des ICO échouent et, même avec une note positive des meilleurs analystes, le taux d’échec ne descend qu’à un peu plus de la moitié.
+
+Le document porte pourtant de l’information. La recherche a relié des caractéristiques mesurables (longueur, lisibilité, fautes de langue, intensité du ton) au devenir des projets. Aucune ne décide de l’issue, mais toutes s’observent tôt. Ce qui manque, c’est l’échelle : aucun outil ne compare un document à des milliers d’autres selon les mêmes critères.
+
+## L’approche : mesurer, pas noter
+
+Rochondra ne propose pas un avis de plus sur les whitepapers, mais une mesure. Les indicateurs viennent de la littérature scientifique au lieu d’être inventés pour l’occasion, et la méthode de calcul est publiée avec les résultats, pour que chacun puisse la vérifier et la contester.
+
+Le résultat est un ensemble de valeurs brutes et la **position du document dans une distribution** de milliers d’autres. Il n’y a ni note globale, ni niveau de risque, ni recommandation. Les mesures décrivent le document, pas le projet ni les personnes qui le portent.
+
+## Constituer le corpus
+
+Le corpus a été construit à partir de CoinMarketCap, la seule source trouvée qui fournisse gratuitement les liens vers les whitepapers sur un périmètre assez large. Sur le web actuel, seul un whitepaper sur cinq environ est encore accessible : les liens morts ont donc été récupérés depuis l’Internet Archive grâce à un collecteur parallélisé.
+
+<Stats
+  items={[
+    { value: '6 941', label: 'URL de whitepapers testées' },
+    { value: '5 880', label: 'PDF récupérés et vérifiés', note: '30,4 Go' },
+    { value: '5 300', label: 'avec un texte exploitable' },
+    { value: '14,7 → 71,7 %', label: 'taux de récupération 2017–2019 après passage par l’archive' },
+  ]}
+/>
+
+Chaque échec est consigné, si bien que la part de documents perdus est connue, et les biais hérités de l’archive (troncature, sélection) sont mesurés par rapport à un dénominateur connu. Le corpus est surtout post-ICO, ce qui compte, car la plupart des travaux à l’origine des indicateurs portaient sur des documents de l’ère ICO.
+
+<EraBar lang="fr" />
+
+## Architecture
+
+Le projet a été conçu dès le départ comme une application qui tourne de la même façon en local et dans le cloud, et non comme un notebook à industrialiser plus tard. La logique est exposée par une API, le stockage est séparé par rôle et rien n’est écrit sur le disque local.
+
+<Architecture lang="fr" />
+
+## Quatre décisions qui l’ont façonné
+
+Le [journal des décisions](https://github.com/Haszb/Rochondra/blob/main/docs/decision-log.md) en compte 28 à ce jour, chacune avec le problème qu’elle résout, les alternatives écartées et le coût accepté. Quatre d’entre elles expliquent l’essentiel de la forme du projet.
+
+<Decision id="D6" title="Le déterministe d’abord, le LLM en arbitre" anchor="d6-deterministic-first-the-llm-as-arbiter" costLabel="Coût accepté" cost="Chaque appel au modèle exige de structurer le problème en amont, et le texte généré doit rester identifiable pour être exclu des mesures.">
+  Les LLM ne sont pas déterministes, ce qui est incompatible avec un corpus dont les lignes doivent être comparables. Les mesures reposent donc sur des méthodes déterministes éprouvées. Lorsque les documents poussent ces méthodes dans leurs limites (pour extraire une table des matières, par exemple), le modèle ne fait que confirmer des candidats produits en amont ou choisir entre eux. Il ne génère jamais sa propre réponse.
+</Decision>
+
+<Decision id="D21" title="Des mesures plutôt que des notes" anchor="d21-measurements-rather-than-ratings" costLabel="Coût accepté" cost="Moins lisible d’un coup d’œil, et aucun classement global, même si certains utilisateurs en attendront un.">
+  L’objectif initial était une note de fondamentaux. L’étude des plateformes de notation a révélé des évaluations structurellement optimistes, des conflits d’intérêts documentés et, dans plusieurs cas, des sanctions. Sans mesure de qualité étiquetée pour la tester, toute pondération serait en outre arbitraire. Rochondra produit à la place des valeurs brutes et des positions dans une distribution.
+</Decision>
+
+<Decision id="D24" title="La récupération via l’Internet Archive" anchor="d24-recovery-through-the-internet-archive" costLabel="Coût accepté" cost="Le corpus hérite des biais de l’archive, qui sont mesurés et signalés avec chaque analyse plutôt que cachés.">
+  Ne garder que les documents encore en ligne aurait produit un corpus de survivants. Interroger l’Internet Archive pour chaque URL morte a permis de reconstruire l’essentiel de l’ère ICO, la plus touchée par la disparition des sites.
+</Decision>
+
+<Decision id="D16" title="Trois couches de stockage, un rôle chacune" anchor="d16-three-storage-layers-one-role-each" costLabel="Coût accepté" cost="Trois systèmes à faire tourner au lieu d’un.">
+  Redis porte la zone de travail, MinIO stocke les fichiers et les résultats d’analyse, et PostgreSQL conserve les faits durables dans un schéma en étoile. Rien n’atteint la base avant la finalisation, pour qu’un document soumis puisse à terme être vérifié avant que quoi que ce soit le concernant ne soit stocké.
+</Decision>
+
+## Où en est le projet
+
+Le pipeline est un prototype fonctionnel. Il fait passer un PDF par l’extraction du texte, les indicateurs structurels, la détection de la table des matières et le sentiment par section. Le travail est organisé en phases ordonnées par dépendance plutôt que par date, car la disponibilité est irrégulière et un calendrier serait une fiction. Chaque phase a un critère de sortie vérifiable et se termine par quelque chose de public : un article, une mise à jour du site, ou les deux.
+
+<Roadmap lang="fr" current={1} />
+
+La phase 1 fait tourner toute la chaîne une première fois à petite échelle : 210 whitepapers, 70 par ère, vérifiés à la main, mesurés avec les indicateurs structurels et publiés sur le site du projet avec leur méthodologie. Le plan complet, carte par carte, se trouve dans la [feuille de route](https://github.com/Haszb/Rochondra/blob/main/docs/roadmap.md) (en anglais).

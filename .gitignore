@@ -1,0 +1,22 @@
+# Build output
+dist/
+.astro/
+
+# Dependencies
+node_modules/
+
+# Rochondra source documents (kept locally to draw content from, never published)
+_sources/
+
+# Logs and env
+npm-debug.log*
+.env
+.env.*
+
+# OS / editors
+.DS_Store
+.vscode/
+.idea/
+
+# Original photo, kept locally (the site uses the resized public/img/photo.jpg)
+src/content/profile/photo_cv_small.jpg

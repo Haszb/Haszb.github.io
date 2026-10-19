@@ -1,0 +1,108 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { localePath, t, type Lang } from '../i18n/ui';
+import FeatureVisual from './FeatureVisual.astro';
+
+interface Props {
+  lang: Lang;
+  project: CollectionEntry<'projects'>;
+  index: number;
+}
+
+const { lang, project, index } = Astro.props;
+const slug = project.id.split('/')[1];
+const d = project.data;
+const href = localePath(lang, `/projects/${slug}/`);
+---
+
+<article class="feature" data-flip={index % 2 === 1 ? '' : undefined}>
+  <div class="body">
+    <p class="label">{d.kicker} · <span class="mono">{d.period}</span></p>
+    <h3><a href={href}>{d.title}</a></h3>
+    <p class="summary justified">{d.summary}</p>
+    <ul class="tags">{d.stack.map((s) => <li>{s}</li>)}</ul>
+    <p class="actions">
+      {d.page && <a class="arrow-link" href={href}>{t(lang, 'card.readCase')}</a>}
+      {
+        d.links
+          .filter((l) => l.href.includes('github.com'))
+          .slice(0, 1)
+          .map((l) => (
+            <a class="arrow-link" data-external href={l.href}>
+              {t(lang, 'card.repo')}
+            </a>
+          ))
+      }
+    </p>
+  </div>
+  <a class="visual" href={href} tabindex="-1" aria-hidden="true">
+    <FeatureVisual slug={slug} lang={lang} />
+  </a>
+</article>
+
+<style>
+  .feature {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    gap: clamp(1.5rem, 4vw, 3.5rem);
+    align-items: center;
+    padding: clamp(1.25rem, 3vw, 2.25rem);
+    border: 1px solid var(--rule);
+    border-radius: calc(var(--radius) * 1.5);
+    background: var(--paper);
+    transition: border-color 0.2s ease;
+  }
+
+  .feature:hover {
+    border-color: var(--rule-strong);
+  }
+
+  .feature[data-flip] .visual {
+    order: -1;
+  }
+
+  .body {
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  h3 {
+    font-size: var(--step-3);
+    letter-spacing: -0.02em;
+  }
+
+  h3 a {
+    text-decoration: none;
+  }
+
+  .summary {
+    color: var(--ink-2);
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    margin-top: 0.4rem;
+  }
+
+  .visual {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .visual:hover {
+    color: inherit;
+  }
+
+  @media (max-width: 52rem) {
+    .feature {
+      grid-template-columns: 1fr;
+    }
+
+    .feature[data-flip] .visual {
+      order: 0;
+    }
+  }
+</style>

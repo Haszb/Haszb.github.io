@@ -1,0 +1,93 @@
+# Resume, "LinkedIn" version: experience worded from _sources/resume.md (LinkedIn export).
+# Summary, education and skills come from the PDF, so both versions share the same frame.
+# The Rochondra entry follows the decision log (no scores, D21; only the stack it documents).
+#
+# Quote any value that contains a colon followed by a space, or the file breaks silently.
+# To add a role, copy a block under `experience` (from `- company:` to the end of its bullets).
+
+# Path to the PDF offered by the Download button (the file lives in public/).
+pdf: /hassan-zbib-resume.pdf
+
+availability: France · EU citizen · Open to relocation and remote
+
+summary: >-
+  I run projects end to end: requirements gathering, scoping, and delivery across multiple
+  stakeholders and providers. A Machine Learning Engineering & AI Project Management degree gives
+  me the technical fluency to specify and prioritise AI products, not just coordinate them.
+
+experience:
+  - company: Rochondra Lab · Self-employed
+    title: Independent Researcher & Developer
+    period: Feb 2026 – Present
+    place: France
+    intro: >-
+      Independent research project applying data science methodology to blockchain fundamentals,
+      with a current focus on crypto whitepaper analysis.
+    bullets:
+      - Designed and built an end-to-end application (FastAPI + Streamlit) that automates whitepaper analysis, from PDF ingestion to a section-by-section summary and sentiment analysis
+      - Combined FinBERT (sentiment) with free local and hosted LLMs, balancing analysis quality against infrastructure cost
+      - Built a PostgreSQL star schema with MinIO and Redis for storage and the working cache, designed to run the same way locally and in the cloud
+      - Publish research articles synthesising academic literature (Journal of Banking & Finance, Management Science and others) on topics such as ICO analyst rating bias and whitepaper quality signals
+      - Translate findings into measurable indicators that place each document within a distribution of thousands of others, without scores or recommendations
+
+  - company: TELUS Digital AI Data Solutions · Freelance
+    title: Data Quality Analyst
+    period: Feb 2025 – Sep 2025
+    place: France · Remote
+    intro: >-
+      Freelance engagement evaluating AI/LLM outputs against product quality guidelines across
+      multilingual and multimodal use cases (text, image, audio).
+    bullets:
+      - Consistently ranked top performer for productivity and accuracy across evaluation tasks
+      - Expanded scope to new task types, including geolocation and generative AI evaluation, through continuous upskilling and internal certifications
+      - Gained direct exposure to how AI outputs are assessed and refined at scale, informing my approach to building reliable ML systems
+
+  - company: Fox Security
+    title: Project Manager
+    period: Nov 2020 – Sep 2022
+    place: Brest, France · On-site
+    intro: >-
+      International brokerage firm delivering turnkey security solutions for sensitive sites across
+      Africa and the Middle East.
+    bullets:
+      - Analysed client requirements (direct and public tenders) to identify and coordinate matching service providers across France and Europe
+      - Consolidated input from multiple specialised providers into unified proposal documentation, relayed to client-facing teams to support accurate proposals
+      - Monitored legal, technological and geopolitical developments to anticipate changes and keep proposed solutions compliant and relevant
+      - Maintained communication between all stakeholders throughout projects
+
+  - company: KZ International Group
+    title: Project Coordinator
+    period: May 2017 – Sep 2020
+    place: Brest, France · On-site
+    intro: International trade company selling a diverse range of products.
+    bullets:
+      - Analysed clients’ specific needs to offer tailored solutions aligned with their objectives
+      - Sourced and negotiated with suppliers across a diverse, evolving product range, securing optimal commercial terms
+      - Reduced warehouse maintenance costs by 15% by streamlining operational processes and renegotiating supplier terms
+      - Managed seasonal teams of up to 12 people to handle activity peaks, maintaining engagement and efficiency
+
+education:
+  - school: DataScientest, certified by Mines Paris – PSL
+    degree: EQF Level 7 (Master’s level), Machine Learning Engineering & AI Project Management
+    period: Aug 2023 – Jun 2024
+    place: Remote, France
+    details: 'Specialisation: Data Science, MLOps, AI Project Management, Agile Methodology'
+
+  - school: European Institute for Marine Studies
+    degree: MSc Chemistry of the Marine Environment
+    period: Sep 2010 – Jun 2012
+    place: Brest, France
+
+skills:
+  - label: Certifications
+    items: AWS Solutions Architect (SAA-C03)
+  - label: Product & project management
+    items: Requirements gathering, user stories, MVP scoping, Agile/Scrum, Jira
+  - label: Technical
+    items: Python, SQL, NLP/LLM (Hugging Face), cloud (AWS), MLOps
+  - label: Soft skills
+    items: Stakeholder management, team coordination, problem solving, communication, adaptability
+  - label: Languages
+    items: French (native), English (bilingual)
+  - label: Interests
+    items: Karate, hiking, reading, travelling

@@ -1,0 +1,518 @@
+---
+import { getCollection, getEntry, render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FeaturedProject from './FeaturedProject.astro';
+import ProjectCard from './ProjectCard.astro';
+import ArticleList from './ArticleList.astro';
+import Resume from './Resume.astro';
+import { t, type Lang, type UiKey } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const profile = await getEntry('profile', lang);
+if (!profile) throw new Error(`Missing src/content/profile/${lang}.md`);
+const { Content: Summary } = await render(profile);
+
+const projects = (await getCollection('projects', ({ id }) => id.startsWith(`${lang}/`))).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+const featured = projects.filter((p) => p.data.featured);
+const academic = projects.filter((p) => !p.data.featured);
+
+const articles = (await getCollection('articles')).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const p = profile.data;
+
+// Resume versions being compared during the prototype; French falls back to English.
+async function resumeVersion(version: string) {
+  const entry = (await getEntry('resume', `${lang}/${version}`)) ?? (await getEntry('resume', `en/${version}`));
+  if (!entry) throw new Error(`Missing src/content/resume/en/${version}.yaml`);
+  return entry;
+}
+const resumeLinkedin = await resumeVersion('linkedin');
+const resumePdf = await resumeVersion('pdf');
+
+// The tab bar under the intro. The first tab opens when the URL has no #fragment.
+const tabs: { id: string; label: UiKey }[] = [
+  { id: 'projects', label: 'nav.projects' },
+  { id: 'resume-linkedin', label: 'tabs.resumeLinkedin' },
+  { id: 'resume-pdf', label: 'tabs.resumePdf' },
+  { id: 'writing', label: 'nav.writing' },
+  { id: 'contact', label: 'nav.contact' },
+];
+
+// Contact entries. The brand marks are Simple Icons 9.21.0 paths (CC0), drawn in the text colour.
+const contacts = [
+  {
+    label: t(lang, 'contact.email'),
+    href: `mailto:${p.email}`,
+    text: p.email,
+    icon: 'M2 4h20a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm.4 2L12 12.4 21.6 6zM2 8.1V18h20V8.1l-10 6.7z',
+  },
+  {
+    label: 'LinkedIn',
+    href: p.linkedin,
+    text: p.linkedin.replace(/^https:\/\/(www\.)?/, '').replace(/\/$/, ''),
+    icon: 'M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z',
+  },
+  {
+    label: 'GitHub',
+    href: p.github,
+    text: p.github.replace(/^https:\/\//, ''),
+    icon: 'M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12',
+  },
+  {
+    label: 'Medium',
+    href: p.medium,
+    text: p.medium.replace(/^https:\/\//, ''),
+    icon: 'M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z',
+  },
+];
+
+const title = `${p.name} · ${p.role}`;
+const description =
+  lang === 'fr'
+    ? 'Portfolio de Hassan Zbib : NLP, data engineering et data science. Rochondra, analyse de prix Bitcoin et projets de formation.'
+    : 'Portfolio of Hassan Zbib: NLP, data engineering and data science. Rochondra, Bitcoin price analysis and training projects.';
+---
+
+<BaseLayout lang={lang} title={title} description={description}>
+  <section class="intro wrap" aria-labelledby="intro-title">
+    <div class="intro-text">
+      <div class="intro-head">
+        <div class="avatar">
+          <img src={p.photo} alt={p.photoAlt} width="400" height="500" />
+        </div>
+        <div class="intro-title">
+          <p class="label">{p.role}</p>
+          <h1 id="intro-title">{p.name}</h1>
+        </div>
+      </div>
+      <div class="summary justified">
+        <Summary />
+      </div>
+      <ul class="intro-links">
+        <li><a class="arrow-link" href="#contact">{t(lang, 'nav.contact')}</a></li>
+        <li><a class="arrow-link" data-external href={p.github}>GitHub</a></li>
+        <li><a class="arrow-link" data-external href={p.linkedin}>LinkedIn</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="tabs" data-tabs>
+  <div class="tabbar-row">
+    <div class="wrap">
+      <div class="tabbar" aria-label={t(lang, 'tabs.label')}>
+        {
+          tabs.map((tab) => (
+            <a class="tab" id={`tab-${tab.id}`} href={`#${tab.id}`} data-tab={tab.id}>
+              {t(lang, tab.label)}
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+
+  <section id="projects" class="section panel" aria-labelledby="projects-title">
+    <div class="wrap">
+      <header class="section-head">
+        <h2 id="projects-title">{t(lang, 'home.featured')}</h2>
+      </header>
+      <div class="featured">
+        {featured.map((project, i) => <FeaturedProject lang={lang} project={project} index={i} />)}
+      </div>
+
+      <header class="section-head sub">
+        <h3>{t(lang, 'home.academic')}</h3>
+        <p>{t(lang, 'home.academicNote')}</p>
+      </header>
+      <div class="cards">
+        {academic.map((project) => <ProjectCard lang={lang} project={project} />)}
+      </div>
+    </div>
+  </section>
+
+  <section id="resume-linkedin" class="section panel" aria-labelledby="resume-linkedin-title">
+    <div class="wrap">
+      <Resume lang={lang} resume={resumeLinkedin} titleId="resume-linkedin-title" />
+    </div>
+  </section>
+
+  <section id="resume-pdf" class="section panel" aria-labelledby="resume-pdf-title">
+    <div class="wrap">
+      <Resume lang={lang} resume={resumePdf} titleId="resume-pdf-title" />
+    </div>
+  </section>
+
+  <section id="writing" class="section panel" aria-labelledby="writing-title">
+    <div class="wrap">
+      <header class="section-head">
+        <h2 id="writing-title">{t(lang, 'home.writing')}</h2>
+        <p>{t(lang, 'home.writingNote')}</p>
+      </header>
+      <ArticleList lang={lang} articles={articles} />
+    </div>
+  </section>
+
+  <section id="contact" class="section panel" aria-labelledby="contact-title">
+    <div class="wrap contact">
+      <header class="section-head">
+        <h2 id="contact-title">{t(lang, 'home.contact')}</h2>
+        <p>{t(lang, 'home.contactNote')}</p>
+      </header>
+      <dl class="contact-list">
+        {
+          contacts.map((c) => (
+            <div>
+              <dt>
+                <svg class="contact-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d={c.icon} />
+                </svg>
+                <span class="label">{c.label}</span>
+              </dt>
+              <dd>
+                <a href={c.href}>{c.text}</a>
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </section>
+  </div>
+</BaseLayout>
+
+<script>
+  // Without JavaScript every section stays visible, stacked, and the tabs are plain anchors.
+  // With it, one panel shows at a time; the URL fragment names the open tab, so links and the
+  // Back button work.
+  const root = document.querySelector<HTMLElement>('[data-tabs]');
+  const bar = root?.querySelector<HTMLElement>('.tabbar');
+  const tabs = [...(root?.querySelectorAll<HTMLAnchorElement>('[data-tab]') ?? [])];
+  const ids = tabs.map((tab) => tab.dataset.tab ?? '');
+  const panels = ids.map((id) => document.getElementById(id));
+
+  if (root && bar && panels.every(Boolean)) {
+    const fromHash = () => {
+      const id = decodeURIComponent(location.hash.slice(1));
+      return ids.includes(id) ? id : null;
+    };
+
+    const select = (id: string) => {
+      tabs.forEach((tab, i) => {
+        const on = ids[i] === id;
+        tab.setAttribute('aria-selected', String(on));
+        tab.tabIndex = on ? 0 : -1;
+        panels[i]!.hidden = !on;
+      });
+      // Keep the selected tab in view when the bar scrolls sideways
+      const selected = tabs[ids.indexOf(id)];
+      bar.scrollLeft = selected.offsetLeft - (bar.clientWidth - selected.offsetWidth) / 2;
+    };
+
+    // Bring the bar back into view when a link elsewhere on the page opens a tab
+    const reveal = () => requestAnimationFrame(() => bar.scrollIntoView({ block: 'start' }));
+
+    bar.setAttribute('role', 'tablist');
+    tabs.forEach((tab, i) => {
+      tab.setAttribute('role', 'tab');
+      tab.setAttribute('aria-controls', ids[i]);
+      panels[i]!.setAttribute('role', 'tabpanel');
+      panels[i]!.setAttribute('aria-labelledby', tab.id);
+    });
+    root.classList.add('is-tabbed');
+
+    const initial = fromHash();
+    select(initial ?? ids[0]);
+    if (initial) reveal();
+
+    const open = (index: number, push: boolean) => {
+      const id = ids[index];
+      if (push) history.pushState(null, '', `#${id}`);
+      else history.replaceState(null, '', `#${id}`);
+      select(id);
+    };
+
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', (event) => {
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        event.preventDefault();
+        if (tab.getAttribute('aria-selected') !== 'true') open(i, true);
+      });
+    });
+
+    // Arrow keys move between tabs (WAI-ARIA tabs pattern, automatic activation)
+    bar.addEventListener('keydown', (event) => {
+      const current = tabs.findIndex((tab) => tab === document.activeElement);
+      if (current < 0) return;
+      const last = tabs.length - 1;
+      const next =
+        event.key === 'ArrowRight' ? (current === last ? 0 : current + 1)
+        : event.key === 'ArrowLeft' ? (current === 0 ? last : current - 1)
+        : event.key === 'Home' ? 0
+        : event.key === 'End' ? last
+        : -1;
+      if (next < 0) return;
+      event.preventDefault();
+      open(next, false);
+      tabs[next].focus();
+    });
+
+    window.addEventListener('popstate', () => select(fromHash() ?? ids[0]));
+    window.addEventListener('hashchange', () => {
+      const id = fromHash();
+      if (!id) return;
+      select(id);
+      reveal();
+    });
+  }
+</script>
+
+<style>
+  .intro {
+    padding-block: clamp(3rem, 9vw, 6.5rem) clamp(3rem, 7vw, 5rem);
+  }
+
+  /* The text runs to the right edge of the page frame, like the content below the tab bar */
+  .intro-text {
+    display: grid;
+    gap: 1.1rem;
+  }
+
+  h1 {
+    font-size: var(--step-4);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1;
+  }
+
+  .summary {
+    display: grid;
+    gap: 1rem;
+    /* Between --step-0 and --step-1 */
+    font-size: clamp(1.15rem, 1.08rem + 0.35vw, 1.32rem);
+    line-height: 1.55;
+    color: var(--ink-2);
+  }
+
+  .summary :global(strong) {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .intro-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1.6rem;
+    padding: 0;
+    margin: 0.4rem 0 0;
+    list-style: none;
+  }
+
+  .intro-links .arrow-link {
+    font-size: var(--step-0);
+  }
+
+  /* Phones: a small headshot beside the name, cropped from the portrait photo to head and
+     shoulders. Wider screens: a fixed-size photo in a left column (see the media query below). */
+  .intro-head {
+    display: flex;
+    align-items: center;
+    gap: clamp(1rem, 2.5vw, 1.6rem);
+  }
+
+  .intro-head .label {
+    margin-bottom: 0.5rem;
+  }
+
+  .avatar {
+    flex: none;
+    width: clamp(4.5rem, 7vw, 6.5rem);
+    aspect-ratio: 1;
+    overflow: hidden;
+    border-radius: var(--radius);
+  }
+
+  .avatar img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 0%;
+    transform: scale(1.6);
+    transform-origin: 50% 22%;
+  }
+
+  /* Two fixed columns: the text, then the photo aligned to the top on the right. The text
+     never runs under the photo, so its line length stays constant (~70 characters). */
+  @media (min-width: 44rem) {
+    .intro-text {
+      grid-template-columns: minmax(0, 1fr) auto;
+      column-gap: clamp(2rem, 4vw, 3.5rem);
+    }
+
+    /* The label, name, summary and links become rows of one grid, so the photo can start
+       level with the name rather than with the label above it */
+    .intro-head,
+    .intro-title {
+      display: contents;
+    }
+
+    /* Keeps the label tight above the name despite the grid's row gap */
+    .intro-head .label {
+      margin-bottom: -0.6rem;
+    }
+
+    .avatar {
+      grid-column: 2;
+      grid-row: 2 / span 3;
+      align-self: start;
+      /* Drops from the name's line box to the top of its capitals */
+      margin-top: calc(var(--step-4) * 0.15);
+      width: clamp(11rem, 17vw, 15rem);
+      aspect-ratio: 4 / 5;
+    }
+
+    .avatar img {
+      transform: scale(1.15);
+      transform-origin: 50% 0%;
+    }
+
+    .intro-title > *,
+    .intro-text > :not(.intro-head) {
+      grid-column: 1;
+    }
+  }
+
+  /* ---------- Tab bar ----------
+     Plain labels on one edge-to-edge rule; the selected one takes full ink and an accent
+     underline sitting on the rule. */
+  .tabbar-row {
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .tabbar {
+    position: relative;
+    display: flex;
+    /* Temporary: wraps on narrow screens until the phone layout is decided */
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0 clamp(1.25rem, 3vw, 2.25rem);
+  }
+
+  .tab {
+    position: relative;
+    padding: 0.95rem 0 0.85rem;
+    font-size: var(--step-0);
+    font-weight: 500;
+    color: var(--muted);
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: color 0.15s ease;
+  }
+
+  .tab:hover {
+    color: var(--ink);
+  }
+
+  .tab[aria-selected='true'] {
+    color: var(--ink);
+  }
+
+  /* The underline sits on the row's bottom rule */
+  .tab::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 -1px;
+    height: 2px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transition: transform 0.2s ease;
+  }
+
+  .tab[aria-selected='true']::after {
+    transform: scaleX(1);
+  }
+
+  .tab:focus-visible {
+    outline-offset: 2px;
+  }
+
+  /* A link to #panel lands with the tab bar still visible above it */
+  .panel {
+    scroll-margin-top: 4.5rem;
+  }
+
+  /* The bar wraps onto two lines on phones */
+  @media (max-width: 40rem) {
+    .panel {
+      scroll-margin-top: 8rem;
+    }
+  }
+
+  .is-tabbed .panel {
+    border-top: 0;
+    padding-top: clamp(2.25rem, 5vw, 3.5rem);
+  }
+
+  .featured {
+    display: grid;
+    gap: clamp(1.5rem, 3vw, 2.25rem);
+  }
+
+  .section-head.sub {
+    max-width: none;
+    margin-top: clamp(3.5rem, 8vw, 5.5rem);
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  .section-head.sub h3 {
+    font-size: var(--step-1);
+  }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+    gap: clamp(1.25rem, 3vw, 2rem);
+  }
+
+  /* Two by two on wide screens, one column on phones */
+  .contact-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
+    gap: 1.75rem 2.5rem;
+    margin: 0;
+  }
+
+  /* Icon on the left, spanning the label and the link */
+  .contact-list > div {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: 0.9rem;
+    align-items: center;
+    align-content: start;
+  }
+
+  /* The icon and the label become cells of the grid above */
+  .contact-list dt {
+    display: contents;
+  }
+
+  .contact-icon {
+    grid-row: span 2;
+    width: 1.75rem;
+    height: 1.75rem;
+    fill: var(--ink-2);
+  }
+
+  .contact-list dd {
+    margin: 0.35rem 0 0;
+    font-size: var(--step-1);
+    overflow-wrap: anywhere;
+  }
+</style>

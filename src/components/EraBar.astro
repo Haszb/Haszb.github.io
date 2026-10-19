@@ -1,0 +1,120 @@
+---
+// Share of retrieved whitepapers per CoinMarketCap listing era (roadmap, "Where things stand").
+import type { Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  compact?: boolean;
+}
+
+const { lang, compact = false } = Astro.props;
+const fr = lang === 'fr';
+const eras = [
+  { key: 'pre', label: fr ? 'Avant 2017' : 'Pre-2017', years: '<2017', share: 2 },
+  { key: 'ico', label: fr ? 'Ère ICO' : 'ICO era', years: '2017–19', share: 15 },
+  { key: 'post', label: fr ? 'Ère post-ICO' : 'Post-ICO era', years: '2020–22', share: 59 },
+  { key: 'modern', label: fr ? 'Ère moderne' : 'Modern era', years: '2023–26', share: 24 },
+];
+const caption = fr
+  ? 'Whitepapers récupérés, par ère d’inscription sur CoinMarketCap'
+  : 'Retrieved whitepapers by CoinMarketCap listing era';
+---
+
+<figure class:list={['era', { compact }]}>
+  <div class="bar" role="img" aria-label={`${caption}: ${eras.map((e) => `${e.label} ${e.share}%`).join(', ')}`}>
+    {eras.map((e) => <span class={`seg ${e.key}`} style={`flex-grow:${e.share}`} />)}
+  </div>
+  <ul class="legend">
+    {
+      eras
+        .filter((e) => e.share >= 5)
+        .map((e) => (
+          <li>
+            <i class={`dot ${e.key}`} />
+            <span class="name">{e.label}</span>
+            <span class="mono">{e.share}%</span>
+            {!compact && <span class="years mono">{e.years}</span>}
+          </li>
+        ))
+    }
+  </ul>
+  <figcaption class="meta">{caption}{fr ? ' (les 2 % restants datent d’avant 2017).' : ' (the remaining 2% were listed before 2017).'}</figcaption>
+</figure>
+
+<style>
+  .era {
+    margin: 0;
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .bar {
+    display: flex;
+    gap: 2px;
+    height: 0.9rem;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .compact .bar {
+    height: 0.65rem;
+  }
+
+  .seg,
+  .dot {
+    background: var(--data-4);
+  }
+
+  .seg {
+    flex-basis: 0;
+  }
+
+  .pre {
+    background: var(--rule-strong);
+  }
+  .ico {
+    background: var(--data-3);
+  }
+  .post {
+    background: var(--data-1);
+  }
+  .modern {
+    background: var(--data-2);
+  }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--serif);
+    font-size: var(--step--1);
+  }
+
+  .legend li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .dot {
+    display: inline-block;
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 1px;
+  }
+
+  .legend .mono {
+    font-size: 0.8rem;
+  }
+
+  .years {
+    color: var(--muted);
+  }
+
+  .compact figcaption {
+    display: none;
+  }
+</style>

@@ -1,0 +1,239 @@
+---
+// Rochondra's layered architecture (decision log D8, D12, D16, D19). HTML/CSS so it reflows on phones.
+import type { Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const fr = lang === 'fr';
+
+const L = fr
+  ? {
+      caption:
+        'Chaque couche n’appelle que celle du dessous : la logique métier n’importe jamais rien de l’API (D12). Chaque stockage a un seul rôle (D16), et un document ne quitte la zone de travail que par un point de sortie unique (D19).',
+      layers: ['Interface', 'API', 'Logique métier', 'Persistance'],
+      calls: 'appelle',
+      ui: [
+        ['Streamlit', 'prototype'],
+        ['Swagger UI', 'en attendant'],
+      ],
+      api: [['FastAPI', 'routes et schémas Pydantic']],
+      logic: [
+        ['Extraction du texte', 'PyMuPDF'],
+        ['Indicateurs structurels', 'lisibilité, longueur, images'],
+        ['Table des matières', 'cascade : signets → heuristiques → LLM'],
+        ['Sentiment par section', 'FinBERT'],
+      ],
+      llm: ['Arbitre LLM', 'local ou hébergé ; confirme des candidats, ne produit jamais de mesure (D6)'],
+      store: [
+        ['Redis', 'zone de travail : documents en attente'],
+        ['MinIO', 'fichiers et résultats JSON (compatible S3)'],
+        ['PostgreSQL', 'faits durables, schéma en étoile'],
+      ],
+      exit: 'sortie unique',
+      config: 'Toute la configuration au même endroit : chaque service est dérivé d’un seul fichier (D9).',
+    }
+  : {
+      caption:
+        'Each layer only calls the one below it: business logic never imports from the API (D12). Each store has one role (D16), and a document leaves the working area through a single exit point (D19).',
+      layers: ['Interface', 'API', 'Business logic', 'Persistence'],
+      calls: 'calls',
+      ui: [
+        ['Streamlit', 'prototype'],
+        ['Swagger UI', 'stand-in for now'],
+      ],
+      api: [['FastAPI', 'routes and Pydantic schemas']],
+      logic: [
+        ['Text extraction', 'PyMuPDF'],
+        ['Structural indicators', 'readability, length, images'],
+        ['Table of contents', 'cascade: bookmarks → heuristics → LLM'],
+        ['Sentiment per section', 'FinBERT'],
+      ],
+      llm: ['LLM arbiter', 'local or hosted; confirms candidates, never produces a measurement (D6)'],
+      store: [
+        ['Redis', 'working area: pending documents'],
+        ['MinIO', 'files and JSON results (S3-compatible)'],
+        ['PostgreSQL', 'durable facts, star schema'],
+      ],
+      exit: 'single exit',
+      config: 'All configuration in one place: every service endpoint is derived from a single file (D9).',
+    };
+---
+
+<figure class="arch">
+  <div class="diagram" role="img" aria-label={L.caption}>
+    <div class="layer">
+      <p class="label">{L.layers[0]}</p>
+      <div class="boxes">{L.ui.map(([n, d]) => <div class="box"><b>{n}</b><span>{d}</span></div>)}</div>
+    </div>
+    <p class="calls" aria-hidden="true">↓ HTTP</p>
+    <div class="layer">
+      <p class="label">{L.layers[1]}</p>
+      <div class="boxes">{L.api.map(([n, d]) => <div class="box strong"><b>{n}</b><span>{d}</span></div>)}</div>
+    </div>
+    <p class="calls" aria-hidden="true">↓ {L.calls}</p>
+    <div class="layer">
+      <p class="label">{L.layers[2]}</p>
+      <div class="logic">
+        <div class="boxes four">{L.logic.map(([n, d]) => <div class="box"><b>{n}</b><span>{d}</span></div>)}</div>
+        <div class="box llm"><b>{L.llm[0]}</b><span>{L.llm[1]}</span></div>
+      </div>
+    </div>
+    <p class="calls" aria-hidden="true">↓ {L.calls}</p>
+    <div class="layer">
+      <p class="label">{L.layers[3]}</p>
+      <div class="boxes store">
+        <div class="box"><b>{L.store[0][0]}</b><span>{L.store[0][1]}</span></div>
+        <div class="exit" aria-hidden="true"><span>{L.exit}</span>→</div>
+        <div class="box"><b>{L.store[2][0]}</b><span>{L.store[2][1]}</span></div>
+        <div class="box files"><b>{L.store[1][0]}</b><span>{L.store[1][1]}</span></div>
+      </div>
+    </div>
+    <p class="config">{L.config}</p>
+  </div>
+  <figcaption>{L.caption}</figcaption>
+</figure>
+
+<style>
+  .arch {
+    margin: 2rem 0;
+  }
+
+  .diagram {
+    display: grid;
+    gap: 0;
+    padding: clamp(0.9rem, 2.5vw, 1.4rem);
+    border: 1px solid var(--rule);
+    border-radius: calc(var(--radius) * 1.5);
+    background: var(--paper-2);
+    font-family: var(--serif);
+  }
+
+  .layer {
+    display: grid;
+    grid-template-columns: 7.5rem minmax(0, 1fr);
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .layer > .label {
+    font-size: 0.68rem;
+  }
+
+  .boxes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .box {
+    flex: 1 1 9rem;
+    display: grid;
+    gap: 0.15rem;
+    padding: 0.55rem 0.7rem;
+    border: 1px solid var(--rule-strong);
+    border-radius: var(--radius);
+    background: var(--paper);
+    font-size: 0.84rem;
+    line-height: 1.3;
+  }
+
+  .box b {
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .box span {
+    color: var(--muted);
+    font-size: 0.78rem;
+  }
+
+  .box.strong {
+    border-color: var(--ink-2);
+  }
+
+  .logic {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .boxes.four .box {
+    flex-basis: 8rem;
+  }
+
+  .box.llm {
+    border-style: dashed;
+    border-color: var(--accent);
+  }
+
+  .box.llm b {
+    color: var(--accent);
+  }
+
+  .store {
+    align-items: stretch;
+  }
+
+  .exit {
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    align-content: center;
+    font-size: 1.1rem;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .exit span {
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 0.15rem;
+  }
+
+  .calls {
+    margin: 0.35rem 0;
+    padding-left: 8.5rem;
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.03em;
+  }
+
+  .config {
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px dashed var(--rule-strong);
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+
+  figcaption {
+    margin-top: 0.85rem;
+    font-family: var(--serif);
+    font-size: var(--step--1);
+    line-height: 1.5;
+    color: var(--ink-2);
+  }
+
+  @media (max-width: 34rem) {
+    .layer {
+      grid-template-columns: 1fr;
+      gap: 0.4rem;
+    }
+
+    .calls {
+      padding-left: 0;
+      text-align: center;
+    }
+
+    .exit {
+      flex-basis: 100%;
+      grid-auto-flow: column;
+      gap: 0.4rem;
+      transform: none;
+    }
+  }
+</style>

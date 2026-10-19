@@ -1,0 +1,165 @@
+---
+// The visual on each featured-project card: built at render time, theme-aware, no client JS.
+import type { Lang } from '../i18n/ui';
+import EraBar from './EraBar.astro';
+import walkforward from '../data/btc/walkforward.json';
+import { extent, linePath, toTime, type Frame } from '../lib/svg';
+
+interface Props {
+  slug: string;
+  lang: Lang;
+}
+
+const { slug, lang } = Astro.props;
+const fr = lang === 'fr';
+
+let btc: { paths: { d: string; cls: string }[]; splitX: number; frame: Frame } | null = null;
+if (slug === 'bitcoin') {
+  const wf = walkforward as Record<string, { x: string[]; y: number[] }>;
+  const series = Object.entries(wf).map(([name, s]) => ({ name, x: s.x.map(toTime), y: s.y }));
+  const frame: Frame = {
+    width: 480,
+    height: 260,
+    pad: { top: 12, right: 8, bottom: 12, left: 8 },
+    xDomain: extent(series.flatMap((s) => s.x), 0),
+    yDomain: extent(series.flatMap((s) => s.y), 0.08),
+  };
+  const cls: Record<string, string> = { 'Initial sequence': 'init', 'Real values': 'real', Predictions: 'pred' };
+  const init = series.find((s) => s.name === 'Initial sequence')!;
+  const last = init.x[init.x.length - 1];
+  btc = {
+    frame,
+    paths: series.map((s) => ({ d: linePath(s, frame), cls: cls[s.name] ?? 'real' })),
+    splitX:
+      frame.pad.left +
+      ((last - frame.xDomain[0]) / (frame.xDomain[1] - frame.xDomain[0])) *
+        (frame.width - frame.pad.left - frame.pad.right),
+  };
+}
+---
+
+{
+  slug === 'rochondra' && (
+    <div class="panel corpus">
+      <dl class="figures">
+        <div>
+          <dt class="meta">{fr ? 'Whitepapers récupérés' : 'Whitepapers retrieved'}</dt>
+          <dd class="mono">{fr ? '5 880' : '5,880'}</dd>
+        </div>
+        <div>
+          <dt class="meta">{fr ? 'Volume' : 'Volume'}</dt>
+          <dd class="mono">{fr ? '30,4 Go' : '30.4 GB'}</dd>
+        </div>
+        <div>
+          <dt class="meta">{fr ? 'URL testées' : 'URLs tried'}</dt>
+          <dd class="mono">{fr ? '6 941' : '6,941'}</dd>
+        </div>
+      </dl>
+      <EraBar lang={lang} compact />
+    </div>
+  )
+}
+
+{
+  btc && (
+    <figure class="panel chart">
+      <svg viewBox={`0 0 ${btc.frame.width} ${btc.frame.height}`} role="img" aria-label={fr ? 'Prévision walk-forward comparée aux prix réels' : 'Walk-forward forecast compared with actual prices'}>
+        <line class="split" x1={btc.splitX} x2={btc.splitX} y1="0" y2={btc.frame.height} />
+        {btc.paths.map((p) => <path class={p.cls} d={p.d} />)}
+      </svg>
+      <figcaption>
+        <span><i class="k real" />{fr ? 'Prix réel' : 'Actual price'}</span>
+        <span><i class="k pred" />{fr ? 'Prévision du modèle' : 'Model forecast'}</span>
+        <span><i class="k init" />{fr ? 'Contexte initial' : 'Initial context'}</span>
+      </figcaption>
+    </figure>
+  )
+}
+
+<style>
+  .panel {
+    margin: 0;
+    padding: clamp(1rem, 2.5vw, 1.5rem);
+    background: var(--paper-2);
+    border-radius: var(--radius);
+  }
+
+  .corpus {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .figures {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(6.5rem, 1fr));
+    gap: 1rem;
+    margin: 0;
+  }
+
+  .figures dd {
+    margin: 0.2rem 0 0;
+    font-size: var(--step-1);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+
+  svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  path {
+    fill: none;
+    stroke-width: 1.6;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .real {
+    stroke: var(--data-1);
+  }
+  .pred {
+    stroke: var(--data-2);
+    stroke-width: 2.2;
+  }
+  .init {
+    stroke: var(--data-3);
+    stroke-width: 2;
+  }
+
+  .split {
+    stroke: var(--rule-strong);
+    stroke-dasharray: 3 4;
+    vector-effect: non-scaling-stroke;
+  }
+
+  figcaption {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 1rem;
+    margin-top: 0.75rem;
+    font-family: var(--serif);
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+
+  .k {
+    display: inline-block;
+    width: 0.9rem;
+    height: 2px;
+    margin-right: 0.4rem;
+    vertical-align: middle;
+  }
+
+  .k.real {
+    background: var(--data-1);
+  }
+  .k.pred {
+    background: var(--data-2);
+  }
+  .k.init {
+    background: var(--data-3);
+  }
+</style>

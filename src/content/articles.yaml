@@ -1,0 +1,53 @@
+# Published articles. Add a new entry at the top; the site sorts by date anyway.
+# `project` links an article to a case study (rochondra | bitcoin) — optional.
+# Titles stay in English; write a one- or two-sentence summary in each language.
+
+- id: analysts-ico
+  title: 'Information asymmetry and conflicts of interest: the ambiguous role of analysts in the ICO ecosystem'
+  url: https://medium.com/@rochondra.lab/information-asymmetry-and-conflicts-of-interest-the-ambiguous-role-of-analysts-in-the-ico-c969af990ab7
+  date: 2026-05-18
+  minutes: 9
+  project: rochondra
+  summary:
+    en: Why ICO ratings tend to be optimistic, and why the people who issue them often have a stake in the outcome. The case for measuring documents rather than trusting opinions.
+    fr: Pourquoi les notations d’ICO tendent à être optimistes, et pourquoi ceux qui les émettent ont souvent intérêt au résultat. Un argument pour mesurer les documents plutôt que se fier aux avis.
+
+- id: decoding-whitepapers
+  title: 'Decoding Whitepapers: What Academic Research Reveals About Crypto Project Quality'
+  url: https://medium.com/@rochondra.lab/decoding-whitepapers-what-academic-research-reveals-about-crypto-project-quality-4e7c8f842570
+  date: 2026-04-15
+  minutes: 10
+  project: rochondra
+  summary:
+    en: A review of the studies that link measurable features of a whitepaper (length, readability, language errors, tone) to what later happens to the project.
+    fr: Une revue des études qui relient des caractéristiques mesurables d’un whitepaper (longueur, lisibilité, fautes, ton) au devenir du projet.
+
+- id: what-to-expect
+  title: Quick presentation of what to expect next
+  url: https://medium.com/@rochondra.lab/quick-presentation-of-what-to-expect-next-ce1027b7ad33
+  date: 2026-04-01
+  minutes: 2
+  project: rochondra
+  summary:
+    en: 'What this series is and is not: a data-science method applied to fundamentals, with no trading signals.'
+    fr: 'Ce que cette série est, et n’est pas : une méthode de data science appliquée aux fondamentaux, sans signal de trading.'
+
+- id: new-direction
+  title: Why I stopped predicting Bitcoin prices and chose a new direction
+  url: https://medium.com/@rochondra.lab/a-new-direction-89003b3017d9
+  date: 2026-03-18
+  minutes: 6
+  project: bitcoin
+  summary:
+    en: The conclusion of the Bitcoin experiment. Price history alone carried no usable signal, so the project turned to measuring what projects publish.
+    fr: La conclusion de l’expérience Bitcoin. L’historique des prix ne contenait aucun signal exploitable, le projet s’est donc tourné vers la mesure de ce que publient les projets.
+
+- id: compass-cryptoverse
+  title: Building a Compass to Explore the Cryptoverse
+  url: https://medium.com/@rochondra.lab/building-a-compass-to-explore-the-cryptoverse-cdbc100a499e
+  date: 2026-03-18
+  minutes: 12
+  project: bitcoin
+  summary:
+    en: The starting point. What cryptocurrencies are beyond the hype, and the question behind the Bitcoin experiment, which was whether historical prices alone could forecast the next ones.
+    fr: 'Le point de départ. Ce que sont les cryptomonnaies au-delà du battage, et la question à l’origine de l’expérience Bitcoin : l’historique des prix suffit-il à prévoir les suivants ?'
