@@ -7,7 +7,6 @@ export const ui = {
   en: {
     'nav.projects': 'Projects',
     'nav.writing': 'Writing',
-    'nav.contact': 'Contact',
     'nav.home': 'Home',
     'nav.resume': 'Resume',
     'tabs.label': 'Sections',
@@ -26,8 +25,6 @@ export const ui = {
     'home.academicNote': 'Team projects completed during my data science training.',
     'home.writing': 'Writing',
     'home.writingNote': 'Articles documenting the projects as they progress, published on Medium.',
-    'home.contact': 'Contact',
-    'home.contactNote': 'The quickest way to reach me is by email.',
     'card.readCase': 'Read the case study',
     'card.repo': 'Repository',
     'card.team': 'Team',
@@ -50,7 +47,6 @@ export const ui = {
   fr: {
     'nav.projects': 'Projets',
     'nav.writing': 'Articles',
-    'nav.contact': 'Contact',
     'nav.home': 'Accueil',
     'nav.resume': 'CV',
     'tabs.label': 'Rubriques',
@@ -69,8 +65,6 @@ export const ui = {
     'home.academicNote': 'Projets d’équipe réalisés pendant ma formation en data science.',
     'home.writing': 'Articles',
     'home.writingNote': 'Articles qui documentent l’avancée des projets, publiés sur Medium.',
-    'home.contact': 'Contact',
-    'home.contactNote': 'Le plus simple pour me joindre reste l’e-mail.',
     'card.readCase': 'Lire l’étude de cas',
     'card.repo': 'Dépôt',
     'card.team': 'Équipe',

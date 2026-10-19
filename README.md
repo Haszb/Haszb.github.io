@@ -23,7 +23,8 @@ The site is complete for a first version and builds cleanly (`npm run build`, `n
 **Font (19 October)**
 
 - Libertinus Serif replaces Inter for all text, chosen on a temporary trial page (since removed) against Latin Modern, STIX Two, Charter, EB Garamond, several screen serifs and sans. IBM Plex Mono stays for code.
-- Home intro: the Contact, GitHub, LinkedIn and Medium links now sit under the photo in the right column, one per line, each with the same logo as in the Contact section. Phones are unchanged (small headshot beside the name, links after the summary).
+- Home intro: Email, GitHub, LinkedIn and Medium links now sit under the photo in the right column, one per line, each with its logo. Phones are unchanged (small headshot beside the name, links after the summary).
+- Contact tab removed, as the links under the photo carry the same information; the header's Contact link went with it (the footer still lists Email, GitHub, LinkedIn and Medium on every page).
 
 **Still to do before publishing**
 
@@ -44,7 +45,7 @@ The site is complete for a first version and builds cleanly (`npm run build`, `n
 
 | Page | URL | Content |
 |---|---|---|
-| Home | `/`, `/fr/` | Photo and short bio, then a tab bar: projects (two featured, three training cards), resume (two versions while prototyping), Medium articles, contact |
+| Home | `/`, `/fr/` | Photo and short bio, then a tab bar: projects (two featured, three training cards), resume (two versions while prototyping), Medium articles |
 | Rochondra | `/projects/rochondra/` | Problem, approach, corpus figures, architecture diagram, decisions D6/D21/D24/D16, roadmap (Phase 1 in progress) |
 | Bitcoin | `/projects/bitcoin/` | Told as the origin of Rochondra: data, market analysis, RNN experiment, result, pivot. Four interactive charts |
 
@@ -127,7 +128,7 @@ Custom domain later: add a `public/CNAME` file containing the domain, change `si
 - **Chart data**: `src/data/btc/*.json` and `public/data/btc-grid/*.json` were extracted from the [bitcoin_price_analysis](https://github.com/Haszb/bitcoin_price_analysis) notebooks and the 168 result CSVs in its `data/2026_01_15/` folder (2 datasets × 3 architectures × 7 hyperparameters). The interactive grid replaces the original Dash app, with no server. Fallback images in `public/img/btc/` are the PNGs embedded in the notebooks.
 - **Typography**: one family, `--serif` (Libertinus Serif: regular, italic, semibold, bold), set in `src/styles/global.css`. Reading text is justified with automatic hyphenation from `44rem` wide: `.prose > p` plus any element given the `justified` class (home intro, featured cards, case page summary, resume text).
 - **Layout widths**: `--wide` (64rem) is the page frame (`.wrap`) and every block ends on its right edge; `--measure` (46rem) caps text columns. The resume and the article list put dates in an 11rem left column so the text beside them reaches the edge; the case pages do the same with the facts sidebar.
-- **Icons**: inline SVG in the text colour, no icon package. The contact logos are Simple Icons 9.21.0 paths (CC0; the last release that still has LinkedIn), pasted into `HomePage.astro`.
+- **Icons**: inline SVG in the text colour, no icon package. The logos under the home photo are Simple Icons 9.21.0 paths (CC0; the last release that still has LinkedIn), pasted into `HomePage.astro`.
 - **Card images** in `public/img/academic/` come from the Rakuten and FloraFlow repositories and slide 12 of the Cartofriches PDF.
 
 ## Not published
