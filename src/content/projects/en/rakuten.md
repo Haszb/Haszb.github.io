@@ -1,12 +1,12 @@
 ---
 title: Rakuten product classification
 kicker: MLOps
-summary: Deployment of a multimodal model that classifies Rakuten catalogue products from their text and image. Covers a secured FastAPI service, a retraining pipeline orchestrated by Airflow, Docker Compose and CI with GitHub Actions.
+summary: Deployment of a multimodal model that classifies Rakuten products from their text and image. A secured FastAPI service manages three user roles, and an Airflow pipeline checks new products daily and retrains the model when its accuracy drops (from 59% to 85.5% in the test scenario). Packaged with Docker Compose, with CI on GitHub Actions.
 order: 3
 period: '2023'
 context: DataScientest
 team: Team project
-stack: [FastAPI, Airflow, Docker, GitHub Actions, TensorFlow, MLflow]
+stack: [Python, FastAPI, SQLAlchemy, PostgreSQL, Airflow, Docker Compose, GitHub Actions]
 links:
   - label: Repository
     href: https://github.com/Haszb/Rakuten
