@@ -2,11 +2,19 @@
 
 Personal portfolio of Hassan Zbib, in English (`/`) and French (`/fr/`). Built with [Astro](https://astro.build), deployed to GitHub Pages.
 
-## Status (19 October 2026)
+## Status (20 October 2026)
 
 The site is complete for a first version and builds cleanly (`npm run build`, `npm run check`: 0 errors). It has been checked in Firefox on desktop and phone widths, in light and dark mode. It is a local git repository (branch `main`, no remote yet) and **not yet published**.
 
-**Latest changes (19 October)**
+**Latest changes (20 October)**
+
+- Profile and project summaries reworded by Hassan (French profile, all French summaries, English Bitcoin and Rochondra); the English profile was brought in line with the French.
+- Featured cards: the kicker line (type · period) spans the whole card, the visual starts level with the title, and titles are 10% smaller ("Bitcoin, analyse du prix" fits on one line from 1000px wide). The Rochondra figures now read URLs tried, whitepapers retrieved, volume.
+- Training cards: context and team lines dropped (the meta line disappears when empty); Rakuten is dated 2024.
+- Resume: the summary paragraph is gone from both versions (and from the schema).
+- Dev server fix: the Bitcoin charts (and so the grid's drop-down menus) had stopped loading under `npm run dev` because Vite served a stale Plotly pre-bundle. Plotly is now pre-bundled at startup (`astro.config.mjs`). The production build was never affected.
+
+**Changes on 19 October**
 
 - Version control: the folder is now a git repository. Claude proposes each commit and makes it only after Hassan confirms.
 - Font: Libertinus Serif replaces Inter for all text, chosen on a temporary trial page (since removed) against Latin Modern, STIX Two, Charter, EB Garamond, several screen serifs and sans. IBM Plex Mono stays for code.
@@ -30,10 +38,10 @@ The site is complete for a first version and builds cleanly (`npm run build`, `n
 - [ ] Choose a resume version, then remove the other tab (`src/components/HomePage.astro`, `tabs` list) and its file in `src/content/resume/en/`.
 - [ ] Decide how the tab bar behaves on phones: it currently wraps onto two centred lines, and the selected tab's underline then floats between them. Proposed: one line that scrolls sideways (the script already keeps the selected tab in view). Choosing a single resume version also shortens the bar.
 - [ ] Then decide whether the intro role line changes to match the chosen resume.
-- [ ] Write the French resume (`src/content/resume/fr/<version>.yaml`).
+- [ ] Write the French resume (`src/content/resume/fr/<version>.yaml`). Until then the build warns "Entry resume → fr/… was not found"; that warning is expected.
 - [ ] Fix "comparable scores" in the PDF CV (contradicts D21), then replace `public/hassan-zbib-resume.pdf`.
 - [ ] Proofread the French text (drafted by Claude): profile, card summaries, both case studies, article summaries.
-- [ ] Check inferred details: project periods (Bitcoin 2025–2026, Rochondra 2026 – present, Rakuten/FloraFlow 2023, Cartofriches 2024), article reading times.
+- [ ] Check inferred details: project periods (Bitcoin 2025–2026, Rochondra 2026 – present, FloraFlow 2023, Cartofriches 2024; Rakuten 2024 is confirmed), article reading times.
 - [ ] Commit `_sources/roadmap.md` to the Rochondra repository as `docs/roadmap.md` (the Rochondra case study links there).
 - [ ] Optionally delete `src/content/profile/photo_cv_small.jpg` (the site uses the resized copy `public/img/photo.jpg`; git ignores the original).
 - [ ] Publish (see below).
@@ -121,7 +129,7 @@ Custom domain later: add a `public/CNAME` file containing the domain, change `si
 - **Stack**: Astro 7.3.5 with MDX, self-hosted fonts (Libertinus Serif, IBM Plex Mono), Plotly (cartesian build) for charts. All versions pinned in `package.json`.
 - **Bilingual routing**: Astro i18n, English unprefixed, French under `/fr/`. Pages: `src/pages/`; shared page bodies: `src/components/HomePage.astro`, `CasePage.astro`.
 - **Theme**: colour tokens in `src/styles/global.css` (light on `:root`, dark under `prefers-color-scheme` and `[data-theme='dark']`; keep the two dark blocks identical). The toggle lives in `src/layouts/BaseLayout.astro`.
-- **Charts** (`src/components/Chart.astro`, `src/scripts/charts.ts`): Plotly loads only on the Bitcoin page, when a chart scrolls into view; charts redraw on theme change. Each chart shows a static PNG until it is drawn (or if JavaScript is off).
+- **Charts** (`src/components/Chart.astro`, `src/scripts/charts.ts`): Plotly loads only on the Bitcoin page, when a chart scrolls into view; charts redraw on theme change. Because the import is lazy, `astro.config.mjs` lists Plotly in `vite.optimizeDeps.include`, otherwise the dev server can serve a stale copy ("504 Outdated Optimize Dep") and no chart draws. Each chart shows a static PNG until it is drawn (or if JavaScript is off).
 - **Chart data**: `src/data/btc/*.json` and `public/data/btc-grid/*.json` were extracted from the [bitcoin_price_analysis](https://github.com/Haszb/bitcoin_price_analysis) notebooks and the 168 result CSVs in its `data/2026_01_15/` folder (2 datasets × 3 architectures × 7 hyperparameters). The interactive grid replaces the original Dash app, with no server. Fallback images in `public/img/btc/` are the PNGs embedded in the notebooks.
 - **Typography**: one family, `--serif` (Libertinus Serif: regular, italic, semibold, bold), set in `src/styles/global.css`. Reading text is justified with automatic hyphenation from `44rem` wide: `.prose > p` plus any element given the `justified` class (home intro, featured cards, case page summary, resume text).
 - **Layout widths**: `--wide` (64rem) is the page frame (`.wrap`) and every block ends on its right edge; `--measure` (46rem) caps text columns. The resume and the article list put dates in an 11rem left column so the text beside them reaches the edge; the case pages do the same with the facts sidebar.

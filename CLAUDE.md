@@ -23,6 +23,7 @@ The site is static. Data features (Supabase, the whitepaper explorer, deciles) b
 - `npm run dev` and `astro preview` detach. Stop them with `npx astro dev stop` / `npx astro preview stop`.
 - YAML values containing `: ` must be quoted (`articles.yaml` fails silently and the collection comes out empty; the build only warns).
 - A chart's `.plot` element is `display: none` until it is drawn, so observers and width measurements target its `.chart-figure` / parent instead.
+- If the Bitcoin charts stop drawing under `npm run dev` (console: "504 Outdated Optimize Dep" on a `node_modules/.vite/deps/plotly…` URL), the Vite cache is stale: stop the server, delete `node_modules/.vite`, restart. Plotly stays in `vite.optimizeDeps.include` in `astro.config.mjs` to prevent it.
 - Editor saves can make the dev server drop a content entry ("Missing src/content/profile/en.md"); re-saving the file restores it.
 
 ## Verifying
