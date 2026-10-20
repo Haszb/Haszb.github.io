@@ -12,4 +12,7 @@ export default defineConfig({
     routing: { prefixDefaultLocale: false },
   },
   trailingSlash: 'ignore',
+  // Plotly is imported lazily (src/scripts/charts.ts), so the dev server would only discover it
+  // at runtime and could serve a stale pre-bundle ("504 Outdated Optimize Dep"); bundle it upfront.
+  vite: { optimizeDeps: { include: ['plotly.js-cartesian-dist-min'] } },
 });
