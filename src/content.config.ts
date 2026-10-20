@@ -62,7 +62,6 @@ const resume = defineCollection({
   schema: z.object({
     pdf: z.string(),
     availability: z.string(),
-    summary: z.string(),
     experience: z.array(
       z.object({
         company: z.string(),

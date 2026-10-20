@@ -33,8 +33,6 @@ const langNote = contentLang !== lang ? t(lang, 'resume.langNote') : '';
 </header>
 
 <div class="resume" lang={contentLang}>
-  <p class="resume-summary justified">{r.summary}</p>
-
   <section aria-label={t(lang, 'resume.experience')}>
     <h3 class="label">{t(lang, 'resume.experience')}</h3>
     <ol class="entries">
@@ -155,11 +153,6 @@ const langNote = contentLang !== lang ? t(lang, 'resume.langNote') : '';
     gap: clamp(2.25rem, 5vw, 3.25rem);
   }
 
-  .resume-summary {
-    margin-left: calc(var(--rail) + var(--rail-gap));
-    color: var(--ink-2);
-  }
-
   .resume section {
     display: grid;
     gap: 1.25rem;
@@ -259,10 +252,6 @@ const langNote = contentLang !== lang ? t(lang, 'resume.langNote') : '';
 
   /* Phones: one column, the dates under the title */
   @media (max-width: 44rem) {
-    .resume-summary {
-      margin-left: 0;
-    }
-
     .entries > li {
       grid-template-columns: minmax(0, 1fr);
     }
