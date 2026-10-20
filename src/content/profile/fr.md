@@ -10,12 +10,12 @@ linkedin: https://www.linkedin.com/in/zbib-hassan/
 medium: https://medium.com/@rochondra.lab
 ---
 
-Je travaille à la croisée de la data, de l’IA, de la gestion de projet et de l’écriture : de la formulation d’un problème à la construction d’une solution, jusqu’à l’explication des décisions qui la fondent.
+Je travaille à l’intersection de la data, de l’IA et de la gestion de projet, du cadrage d’un problème à la construction d’une solution, en justifiant les choix qui la structurent.
 
-Avant de me tourner vers la data et l’IA, j’ai passé plusieurs années à coordonner des projets et à gérer des appels d’offres dans des secteurs variés, comme la sécurité, la cosmétique ou la maintenance. Ces environnements m’ont appris l’importance de traduire des besoins opérationnels en problèmes clairement définis, que l’on peut évaluer et traiter. Dans la sécurité, j’ai aussi découvert des applications concrètes de la reconnaissance d’images, ce qui a contribué à ma décision de me reconvertir.
+Avant de me tourner vers la data et l’IA, j’ai passé plusieurs années à coordonner des projets et à piloter des appels d’offres dans des secteurs variés, notamment la sécurité, la cosmétique et la maintenance. Ces expériences m’ont appris à traduire des besoins opérationnels en problèmes clairement formulés, que l’on peut évaluer et traiter. C’est également dans la sécurité que j’ai découvert les applications concrètes de la reconnaissance d’image, ce qui a déclenché ma reconversion.
 
-En 2024, j’ai terminé une formation de niveau Master en Machine Learning Engineering & AI Project Management chez DataScientest (aujourd’hui Liora), certifiée par Mines Paris PSL.
+En 2024, j’ai suivi chez DataScientest (aujourd’hui Liora) une formation de niveau Master en Machine Learning Engineering & AI Project Management, certifiée par Mines Paris PSL.
 
-Je développe actuellement Rochondra en autonomie, de la collecte et du traitement des documents à la conception du pipeline et aux choix d’architecture. Le projet réunit près de 6 000 whitepapers de cryptomonnaies et un journal des décisions public, qui documente les choix et les compromis derrière le système.
+Je développe actuellement Rochondra, de la collecte et du traitement des documents jusqu’à la conception du pipeline et aux choix d’architecture. Le projet réunit près de 6 000 whitepapers de projets crypto et s’accompagne d’un journal de décision public, dans lequel je documente mes choix et les compromis qu’ils impliquent.
 
-Ce site rassemble mes projets et mes écrits.
+Ce site regroupe mes projets et mes écrits.
