@@ -23,7 +23,7 @@ const primary = d.links[0];
   <div class="body">
     <p class="label">{d.kicker} · <span class="mono">{d.period}</span></p>
     <h4>{primary ? <a href={primary.href}>{d.title}</a> : d.title}</h4>
-    <p class="meta">{[d.context, d.team].filter(Boolean).join(' · ')}</p>
+    {(d.context || d.team) && <p class="meta">{[d.context, d.team].filter(Boolean).join(' · ')}</p>}
     <p class="summary">{d.summary}</p>
     <ul class="tags">{d.stack.map((s) => <li>{s}</li>)}</ul>
     <p class="links">
