@@ -43,16 +43,16 @@ if (slug === 'bitcoin') {
     <div class="panel corpus">
       <dl class="figures">
         <div>
+          <dt class="meta">{fr ? 'URL testées' : 'URLs tried'}</dt>
+          <dd class="mono">{fr ? '6 941' : '6,941'}</dd>
+        </div>
+        <div>
           <dt class="meta">{fr ? 'Whitepapers récupérés' : 'Whitepapers retrieved'}</dt>
           <dd class="mono">{fr ? '5 880' : '5,880'}</dd>
         </div>
         <div>
           <dt class="meta">{fr ? 'Volume' : 'Volume'}</dt>
           <dd class="mono">{fr ? '30,4 Go' : '30.4 GB'}</dd>
-        </div>
-        <div>
-          <dt class="meta">{fr ? 'URL testées' : 'URLs tried'}</dt>
-          <dd class="mono">{fr ? '6 941' : '6,941'}</dd>
         </div>
       </dl>
       <EraBar lang={lang} compact />
@@ -96,8 +96,15 @@ if (slug === 'bitcoin') {
     margin: 0;
   }
 
+  /* Figures sit on one line even when a label wraps. */
+  .figures > div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
   .figures dd {
-    margin: 0.2rem 0 0;
+    margin: auto 0 0;
     font-size: var(--step-1);
     font-weight: 500;
     letter-spacing: -0.02em;

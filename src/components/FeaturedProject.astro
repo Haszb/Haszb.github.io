@@ -16,8 +16,8 @@ const href = localePath(lang, `/projects/${slug}/`);
 ---
 
 <article class="feature" data-flip={index % 2 === 1 ? '' : undefined}>
+  <p class="label kicker">{d.kicker} · <span class="mono">{d.period}</span></p>
   <div class="body">
-    <p class="label">{d.kicker} · <span class="mono">{d.period}</span></p>
     <h3><a href={href}>{d.title}</a></h3>
     <p class="summary justified">{d.summary}</p>
     <ul class="tags">{d.stack.map((s) => <li>{s}</li>)}</ul>
@@ -44,8 +44,8 @@ const href = localePath(lang, `/projects/${slug}/`);
   .feature {
     display: grid;
     grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
-    gap: clamp(1.5rem, 4vw, 3.5rem);
-    align-items: center;
+    gap: 0.9rem clamp(1.5rem, 4vw, 3.5rem);
+    align-items: start;
     padding: clamp(1.25rem, 3vw, 2.25rem);
     border: 1px solid var(--rule);
     border-radius: calc(var(--radius) * 1.5);
@@ -59,6 +59,16 @@ const href = localePath(lang, `/projects/${slug}/`);
 
   .feature[data-flip] .visual {
     order: -1;
+  }
+
+  /* The kicker spans both columns, above the visual and the text. */
+  .kicker {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+
+  .kicker .mono {
+    white-space: nowrap;
   }
 
   .body {
@@ -86,8 +96,10 @@ const href = localePath(lang, `/projects/${slug}/`);
     margin-top: 0.4rem;
   }
 
+  /* Drops the visual to the cap height of the title beside it. */
   .visual {
     display: block;
+    margin-top: calc(var(--step-3) * 0.25);
     text-decoration: none;
     color: inherit;
   }
@@ -99,6 +111,10 @@ const href = localePath(lang, `/projects/${slug}/`);
   @media (max-width: 52rem) {
     .feature {
       grid-template-columns: 1fr;
+    }
+
+    .visual {
+      margin-top: 0.6rem;
     }
 
     .feature[data-flip] .visual {
