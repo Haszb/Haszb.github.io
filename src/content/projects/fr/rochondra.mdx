@@ -1,7 +1,7 @@
 ---
 title: Rochondra
 kicker: NLP · Data engineering · Analyse documentaire
-summary: Beaucoup d’investisseurs manquent de temps ou d’expertise pour analyser les whitepapers crypto, et la recherche a documenté des conflits d’intérêts et des évaluations trop optimistes chez les analystes d’ICO. Rochondra développe une méthode pour mesurer ces documents et situer chacun d’eux parmi des milliers d’autres, à l’aide d’indicateurs issus de la recherche scientifique.
+summary: Faute de temps ou d’expertise, peu d’investisseurs analysent les whitepapers crypto, et il a été mis en évidence des conflits d’intérêts chez les analystes d’ICO. Rochondra mesure ces documents et situe chacun d’eux au sein d’un corpus de plusieurs milliers d’autres, à partir d’indicateurs issus de la recherche scientifique.
 featured: true
 page: true
 order: 1
@@ -26,71 +26,72 @@ import Roadmap from '../../../components/Roadmap.astro';
 
 ## Le problème
 
-Un whitepaper crypto remplit deux fonctions : il décrit un projet et il en fait la promotion. Ce double rôle en fait une source d’information importante, mais pas une garantie de qualité indépendante.
+Un whitepaper crypto remplit deux fonctions : il décrit un projet et en fait la promotion. Il constitue donc une source d’information importante, mais ne garantit pas, à lui seul, la qualité du projet qu’il présente.
 
-Les investisseurs doivent souvent évaluer des projets à l’historique limité, avec des informations incomplètes et une complexité technique importante. La recherche sur l’écosystème des ICO a montré qu’environ la moitié des investisseurs consultent les whitepapers, et qu’une part plus faible les analyse en détail. Beaucoup manquent du temps ou de l’expertise nécessaires pour en évaluer le contenu par eux-mêmes.
+Les investisseurs doivent souvent évaluer des projets dont l’historique est limité, à partir d’informations incomplètes et de documents techniques complexes. Les recherches menées sur l’écosystème des ICO montrent qu’environ la moitié des investisseurs consultent les whitepapers, tandis qu’une part plus faible les analyse en détail. Beaucoup manquent du temps ou de l’expertise nécessaires pour en évaluer le contenu par eux-mêmes.
 
-Les intermédiaires ne résolvent pas forcément le problème. La recherche sur les analystes d’ICO a documenté des notations orientées vers l’optimisme et des conflits d’intérêts, notamment l’incitation à décrocher de futures missions de conseil. Une étude a établi que 64 % des ICO avaient échoué, et que le taux d’échec restait de 53 % parmi les projets bien notés par les experts du premier quartile. Il s’agit de résultats historiques propres à l’écosystème des ICO, et non d’estimations du taux d’échec de l’ensemble du marché crypto actuel.
+Les intermédiaires ne résolvent pas forcément le problème. Les recherches sur les analystes d’ICO ont mis en évidence des biais en faveur d’évaluations positives et des conflits d’intérêts, notamment lorsque l’attribution d’une bonne note peut favoriser l’obtention de futures missions de conseil. Une étude a estimé que 64 % des ICO avaient échoué, et que le taux d’échec restait de 53 % parmi les projets bien notés par les experts les mieux classés. Il s’agit de résultats historiques propres à l’écosystème des ICO, et non d’une estimation du taux d’échec de l’ensemble du marché crypto actuel.
 
-Les documents eux-mêmes contiennent pourtant une information mesurable. La recherche a étudié des propriétés comme la lisibilité, la longueur, les fautes de langue et le ton du récit, au regard des caractéristiques des projets et de leur devenir.
+Pourtant, les documents contiennent une information mesurable. La recherche a étudié des propriétés telles que la lisibilité, la longueur, les erreurs et le ton du discours, ainsi que leurs relations avec les caractéristiques des projets et leurs résultats ultérieurs.
 
-Aucune de ces propriétés ne permet, à elle seule, d’établir qu’un projet est légitime ni de prédire sa réussite. Leur intérêt est de fournir des signaux observables, mesurables de façon homogène et à examiner aux côtés d’autres éléments.
+Isolée, aucune de ces propriétés ne permet de déterminer si un projet est légitime ou de prédire sa réussite. Néanmoins, elles peuvent fournir des signaux observables, qui peuvent être mesurés de manière homogène et examinés en complément d’autres éléments.
 
-Tout l’enjeu est de passer de l’analyse de documents isolés à une comparaison systématique sur un large corpus.
+L’enjeu est de passer de l’analyse de documents isolés à leur comparaison systématique à grande échelle.
 
 ## L’approche : mesurer, pas noter
 
-Rochondra est parti de l’idée de construire une note de fondamentaux. Cette approche posait deux problèmes.
+Rochondra est initialement parti de l’idée de fournir un score, mais cette approche a soulevé deux problèmes.
 
-D’abord, sans jeu de données étiqueté fiable, pondérer les différents indicateurs reviendrait à introduire des hypothèses subjectives, difficiles à valider. Ensuite, la recherche sur les notations d’ICO a documenté des biais structurels et des conflits d’intérêts qui rendent une note composite unique difficile à interpréter.
+D’une part, sans jeu de données étiqueté fiable, pondérer les différents indicateurs reviendrait à introduire des hypothèses subjectives difficiles à valider. D’autre part, la recherche sur les notations d’ICO a documenté des biais structurels et des conflits d’intérêts qui rendent une note composite unique difficile à interpréter.
 
 Le projet a donc pris une autre direction : mesurer d’abord, interpréter ensuite.
 
-Les indicateurs sont choisis dans la recherche publiée chaque fois que c’est possible, et leurs méthodes de calcul sont documentées. Plutôt qu’une note globale, une catégorie de risque ou une recommandation d’investissement, Rochondra fournit des mesures brutes et la position de chaque document dans la distribution correspondante du corpus.
+Les indicateurs sont sélectionnés à partir de travaux scientifiques publiés, lorsque c’est possible, et leurs méthodes de calcul sont documentées. Plutôt que de produire une note globale, une catégorie de risque ou une recommandation d’investissement, Rochondra fournit des valeurs brutes de chaque document positionnées dans la distribution correspondante du corpus.
 
-Un whitepaper peut ainsi être comparé à d’autres documents sur des dimensions précises, sans que ces différences soient réduites à un seul chiffre.
+Un whitepaper peut ainsi être comparé à d’autres documents sur des dimensions précises, sans réduire l’ensemble de ses caractéristiques à un chiffre unique.
 
-Cette distinction compte. Les mesures décrivent le document, pas la qualité globale du projet ni les personnes qui le portent. Leur pertinence dépend des travaux qui fondent chaque indicateur, de la qualité du corpus sous-jacent et des limites de la mesure elle-même.
+Cette distinction est essentielle. Les mesures décrivent le document, et non la qualité globale du projet ni celle des personnes qui le portent. Leur pertinence dépend des travaux scientifiques qui fondent chaque indicateur, de la qualité du corpus sous-jacent et des limites propres à chaque mesure.
 
 ## Constituer le corpus
 
-Le corpus a été construit à partir de CoinMarketCap, la seule source trouvée qui fournisse gratuitement les liens vers les whitepapers sur un large éventail de projets. Sur le web actuel, seul un whitepaper sur cinq environ est encore accessible : les liens morts ont donc été récupérés depuis l’Internet Archive grâce à un collecteur parallélisé.
+Le corpus a été construit à partir de CoinMarketCap, la seule source trouvée qui fournisse gratuitement les liens vers les whitepapers sur un large éventail de projets. Actuellement, seul un whitepaper sur cinq environ est encore accessible sur le web : les liens morts ont donc été récupérés depuis l’Internet Archive grâce à un collecteur parallélisé.
 
 <Stats
   items={[
     { value: '6 941', label: 'URL de whitepapers testées' },
     { value: '5 880', label: 'PDF récupérés et vérifiés', note: '30,4 Go' },
     { value: '5 300', label: 'avec un texte exploitable' },
-    { value: '14,7 → 71,7 %', label: 'taux de récupération 2017–2019 après passage par l’archive' },
+    { value: '14,7 → 71,7 %', label: 'taux de récupération 2017–2019 après passage par l’Internet Archive' },
   ]}
 >
   <EraBar lang="fr" />
 </Stats>
 
-Chaque tentative est consignée, échecs de récupération compris, si bien que la part de documents perdus est connue, et les biais hérités de l’archive (troncature, sélection) sont mesurés par rapport à un dénominateur connu.
+Chaque tentative de récupération est consignée, y compris en cas d’échec. Il devient ainsi possible de quantifier les documents non récupérés et de mesurer les biais liés à la disponibilité des liens et à la couverture des archives.
 
-Le corpus n’est pas un échantillon aléatoire de l’ensemble des whitepapers crypto. Il reflète la couverture de CoinMarketCap, la survie des documents anciens et les limites de l’extraction PDF, et ces contraintes restent visibles dans chaque analyse.
+Le corpus n’est pas un échantillon aléatoire de l’ensemble des whitepapers crypto. Il reflète la couverture de CoinMarketCap, la survie des documents anciens et les limites de l’extraction PDF. Ces contraintes doivent rester visibles dans chaque analyse.
 
-Il est aussi surtout post-ICO, alors que la plupart des travaux à l’origine des indicateurs portaient sur des documents de l’ère ICO. Un indicateur validé sur des whitepapers de 2018 peut se comporter autrement sur des documents écrits pour des modèles de projets plus récents : l’équilibre entre les ères relève donc de la recherche, et pas seulement de la préparation des données.
+Le corpus est principalement constitué de documents postérieurs à l’ère des ICO, alors qu’une grande partie des travaux scientifiques à l’origine des indicateurs porte sur des documents de cette période.
+Un indicateur validé sur des whitepapers de l’ère ICO peut se comporter différemment sur des documents conçus pour des modèles de projets plus récents. Rééquilibrer les différentes périodes relève donc aussi du travail de recherche, et pas uniquement de la préparation des données.
 
 ## Architecture
 
-Le projet a été conçu dès le départ comme une application qui tourne de la même façon en local et dans le cloud, et non comme un notebook à industrialiser plus tard. La logique est exposée par une API, le stockage est séparé par rôle et rien n’est écrit sur le disque local.
+Le projet a été conçu dès le départ comme une application capable de fonctionner de la même façon en local et dans le cloud, plutôt que comme un notebook destiné à être industrialisé plus tard. La logique est exposée par une API, le stockage est séparé selon les rôles, et le traitement est conçu pour ne pas dépendre de fichiers écrits sur le disque local.
 
 <Architecture lang="fr" />
 
-L’architecture sépare le traitement des documents, l’accès par l’API et la persistance. Chaque composant est ainsi plus facile à tester, à remplacer et à faire évoluer, sans lier la logique d’analyse à l’interface ni à l’implémentation du stockage.
+L’architecture sépare le traitement des documents, l’accès par l’API et la persistance. Cette séparation vise à faciliter les tests, le remplacement et l’évolution des composants, sans coupler la logique d’analyse à l’interface ou à l’implémentation du stockage.
 
 ## Quatre décisions qui l’ont façonné
 
-Le [journal des décisions](https://github.com/Haszb/Rochondra/blob/main/docs/decision-log.md) (en anglais) consigne les problèmes, les alternatives et les compromis derrière les principaux choix techniques du projet. Quatre décisions expliquent une grande partie de son orientation actuelle.
+Le [journal des décisions](https://github.com/Haszb/Rochondra/blob/main/docs/decision-log.md) (en anglais) consigne les problèmes rencontrés, les alternatives écartées et les compromis derrière les principaux choix techniques. Quatre décisions expliquent une grande partie de l’architecture et de l’orientation actuelle du projet.
 
 <Decision id="D6" title="Le déterministe d’abord, le LLM en arbitre" anchor="d6-deterministic-first-the-llm-as-arbiter" costLabel="Coût accepté" cost="Chaque appel au modèle exige de structurer le problème en amont, et le texte généré doit rester identifiable pour être exclu des mesures.">
   Les LLM ne sont pas déterministes, ce qui est incompatible avec un corpus dont les lignes doivent être comparables. Les mesures privilégient donc des méthodes déterministes éprouvées. Lorsque la structure d’un document crée une ambiguïté, un LLM peut choisir entre des candidats produits par les étapes de traitement précédentes, mais ne génère jamais sa propre réponse.
 </Decision>
 
 <Decision id="D21" title="Des mesures plutôt que des notes" anchor="d21-measurements-rather-than-ratings" costLabel="Coût accepté" cost="Moins lisible d’un coup d’œil, et aucun classement global, même si certains utilisateurs en attendront un.">
-  L’objectif initial était une note de fondamentaux. L’étude des plateformes de notation a révélé des évaluations structurellement optimistes, des conflits d’intérêts documentés et, dans plusieurs cas, des sanctions. Sans mesure de qualité étiquetée pour la tester, toute pondération serait en outre arbitraire. Rochondra produit à la place des valeurs brutes et des positions dans une distribution.
+  L’objectif initial était un score fondé sur les fondamentaux. L’étude des plateformes de notation a révélé des évaluations structurellement optimistes, des conflits d’intérêts documentés et, dans plusieurs cas, des sanctions. Sans mesure de qualité étiquetée pour la tester, toute pondération serait en outre arbitraire. Rochondra produit à la place des valeurs brutes et des positions dans une distribution.
 </Decision>
 
 <Decision id="D24" title="La récupération via l’Internet Archive" anchor="d24-recovery-through-the-internet-archive" costLabel="Coût accepté" cost="Le corpus hérite des biais de l’archive, qui sont mesurés et signalés avec chaque analyse plutôt que cachés.">

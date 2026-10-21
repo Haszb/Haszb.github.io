@@ -1,7 +1,7 @@
 ---
 title: Bitcoin price analysis
 kicker: Time series · Deep learning · Personal project
-summary: Can price history alone forecast Bitcoin? The project took that question end to end, from a data pipeline and market analysis to 168 tracked neural-network runs. None produced a usable forecast. That result eventually led to Rochondra.
+summary: Can price history alone forecast Bitcoin? The project explored that question end to end, from data collection and market analysis to training 168 neural networks, all tracked. None produced a usable forecast. That result eventually led to Rochondra.
 featured: true
 page: true
 order: 2
@@ -19,11 +19,11 @@ import Stats from '../../../components/Stats.astro';
 
 ## The question
 
-Many Bitcoin forecasting examples predict one step at a time, then feed the model the actual price before making the next prediction. This evaluates repeated short-term forecasts, not how a model behaves when it must rely on its own predictions. This project asked a harder question: **can BTC/USDT price history alone support a useful multi-step forecast when the model has to rely on its own predictions?**
+Many Bitcoin forecasting examples predict one step at a time, then feed the model the actual price before computing the next prediction. They evaluate a series of successive short-term forecasts, but do not reproduce how a model behaves when it must rely on its own predictions. This project asks a harder question: **does BTC/USDT price history alone contain a signal that can forecast several steps ahead, when the model can only rely on its own predictions?**
 
 ## The data
 
-The first step was an automated pipeline to collect hourly candles from Binance, followed by an exploratory analysis of the market from January 2022 to October 2025. Beyond price, the analysis covered volumes, trade counts, buyer and seller pressure, trade-size distributions and normalised volatility.
+The work began with an automated pipeline that collects hourly candles from Binance, followed by an exploratory analysis of the market between January 2022 and October 2025. Beyond price, the analysis looked at volumes, trade counts, buyer and seller pressure, trade-size distributions and normalised volatility.
 
 <Stats
   items={[
@@ -41,37 +41,51 @@ The first step was an automated pipeline to collect hourly candles from Binance,
   source="Source: Binance hourly candles."
 />
 
-The analysis also revealed a market mostly driven by small trades, with relatively few signs of large individual executions on this platform, and a recurring yearly rhythm in trade sizes. It also found that **2025 diverges from the pattern observed in the previous years**. The usual seasonality disappears, and trades get smaller even as the price climbs. That break was the reason the models were trained on 2025 data only.
+The analysis also showed a market mostly driven by small trades, with relatively few signs of large individual trades on the platform. It revealed a yearly seasonality in trade sizes too, and an **apparent break in 2025: the pattern of the previous years disappears**, and trades get smaller even as the price climbs.
+
+These observations concern the Binance data studied and cannot, on their own, describe the Bitcoin market as a whole.
+
+That break led to one constraint: training the models on 2025 data only.
 
 <Chart
   kind="heatmap"
   lang="en"
   height={300}
   label="Heatmap of median trade size by month and year, 2022 to 2025"
-  caption="Median trade size in USDT, by month and year. In 2022–2024 the first half of the year runs higher than the second. In 2025 trade sizes stay low all year."
+  caption="Monthly median trade size in USDT, by year. From 2022 to 2024, trade sizes generally run higher in the first half of the year. In 2025 they stay low all year."
 />
 
 ## The experiment
 
-The models were recurrent neural networks (LSTM, GRU and SimpleRNN), evaluated with **autoregressive walk-forward forecasting**. Each model received an initial window of observed prices (24 hours by default). After that initial window, every forecast depended on the model's own previous predictions rather than newly observed prices. This exposed the models to the error accumulation they would face in a real multi-step forecast. The data was split chronologically to prevent information leakage, and random seeds were fixed to improve reproducibility.
+The models tested were three recurrent neural-network architectures: LSTM, GRU and SimpleRNN, evaluated with a recursive *walk-forward* forecasting strategy.
+
+Each model received an initial window of observed prices (24 hours by default). Beyond it, every forecast depended on the model's own previous predictions rather than on newly observed data. This shows how errors accumulate as the model moves away from known data.
+
+The data was split chronologically to prevent information leakage between training and test, and random seeds were also fixed to improve reproducibility.
 
 <Chart
   kind="walkforward"
   lang="en"
   label="Walk-forward forecast of a two-layer LSTM compared with actual prices, September 2025"
-  caption="A typical result from a two-layer LSTM. After 24 hours of real context, the forecast drifts towards a flat line while the actual price keeps moving. MAE was 2,879 USDT and RMSE 3,386 USDT over the 12-day test window."
+  caption="An example result from a two-layer LSTM. After an initial window of 24 hours of observed prices, the forecast tends towards a flat line while the actual price keeps moving. Over the 12-day test window, the mean absolute error (MAE) reaches 2,879 USDT and the root mean squared error (RMSE) 3,386 USDT."
 />
 
-Aggregate metrics such as MAE and RMSE do not show how a multi-step forecast evolves over time. A prediction can appear close to the observed price by luck or just by following the general trend. The error was therefore also tracked at each step (absolute percentage error), and every run was inspected visually.
+Aggregate metrics such as MAE and RMSE are not enough to show how a recursive forecast evolves over time. An overall error can hide a gradual drift, artificial oscillations, or a forecast that stays close to the price through simple inertia, as in the example above.
 
-To rule out a bad configuration, seven hyperparameters were varied one at a time (input window, batch size, learning rate, units, dropout, depth and loss function) across the three architectures, first on raw prices and then on log-returns, which are more stationary. In total **168 runs were logged in MLflow**. A Dash dashboard was built to compare them side by side. The interactive version below lets you explore the exported results directly in your browser.
+The absolute percentage error was therefore also tracked at each step, and the results of every run were inspected visually.
+
+To rule out a bad configuration, seven hyperparameters were varied one at a time: input window size, batch size, learning rate, units, dropout, network depth and loss function.
+
+The three architectures were tested on raw prices, then on log-returns, a representation that can make non-stationary financial series easier to model.
+
+In total, **168 runs were logged in MLflow**. A Dash dashboard was built to compare them side by side.
 
 <Chart
   kind="grid"
   lang="en"
   label="Small-multiple charts comparing forecasts across values of one hyperparameter"
-  caption="Pick a data representation, an architecture and a hyperparameter. Each panel shows one value of that hyperparameter, with the real prices the model starts from (green, as long as the input window), the actual price (blue) and the forecast (red)."
-  source="Data: the 168 runs logged by the experiment, exported from MLflow."
+  caption="The interactive view lets you pick the data representation, the architecture and the hyperparameter to examine. Each panel compares the observed prices with the model's forecast, separating the initial window of real data from the predicted trajectory."
+  source="Data: the 168 runs logged in MLflow."
 />
 
 ## The result
@@ -79,21 +93,21 @@ To rule out a bad configuration, seven hyperparameters were varied one at a time
 **None of the 168 runs produced a forecast reliable enough to be useful.**
 
 - **LSTM** models consistently drifted towards relatively flat predictions, failing to capture subsequent price movements.
-- **GRU** models showed similar behaviour in many runs. Others generated oscillations that resembled market movements but largely reproduced patterns from the input sequence.
+- **GRU** models showed similar behaviour in many runs. In others, they produced oscillations that resembled market movements but largely reproduced the pattern of the input sequence.
 - **SimpleRNN** models displayed the widest range of behaviours, from repeated patterns to implausible trajectories, without producing a convincing forecast.
 
-Switching from raw prices to log-returns made the series more stationary but did not change the conclusion. Some forecasts flattened towards zero; others reproduced oscillatory patterns without reliably tracking the market.
+Switching from raw prices to log-returns made the series more stationary but did not change the conclusion. Some forecasts converged towards zero; others reproduced oscillations without reliably tracking the market.
 
-The experiments did not establish that Bitcoin prices are inherently unpredictable. They showed something narrower, but useful: these architectures and configurations did not extract a robust forecasting signal from the available price history under recursive evaluation.
+The experiments did not establish that Bitcoin prices are inherently unpredictable. More precisely, they show that the architectures, configurations and data tested did not extract a robust forecasting signal under this recursive evaluation.
 
-## Why it led to Rochondra
+## Why this experiment led to Rochondra
 
 Price is an outcome, not a complete explanation of the forces behind it. Its history reflects the combined effects of information, market participants and changing conditions, many of which are not directly observable in the price series itself.
 
-After 168 runs, there was no convincing evidence that this approach could produce useful forecasts. Adding external variables was a possible next step, but it would have turned the project into a different problem, in an already crowded field.
+After 168 runs, there was no convincing evidence that this approach could produce useful forecasts. Adding external variables was a relevant lead, but also a change of scope, in an already crowded research field.
 
-Instead, the project went in a different direction: studying the inputs and decisions that shape an outcome, rather than trying to predict it.
+Another option was to change the question: rather than trying to predict an asset's price, study the projects behind it.
 
-That idea became Rochondra: an attempt to understand projects through the traces they leave as they are built, starting with their whitepapers. The decision is recorded as the first entry in Rochondra's [decision log](https://github.com/Haszb/Rochondra/blob/main/docs/decision-log.md#d1-measuring-inputs-instead-of-predicting-price), and the full reasoning is explained in [Why I stopped predicting Bitcoin prices and chose a new direction](https://medium.com/@rochondra.lab/a-new-direction-89003b3017d9).
+That idea became Rochondra: a method for understanding projects through the traces they leave as they develop, starting with their whitepapers. The decision is recorded as the first entry in Rochondra's [decision log](https://github.com/Haszb/Rochondra/blob/main/docs/decision-log.md#d1-measuring-inputs-instead-of-predicting-price), and the full reasoning is explained in [Why I stopped predicting Bitcoin prices and chose a new direction](https://medium.com/@rochondra.lab/a-new-direction-89003b3017d9).
 
 <p><a class="arrow-link" href="/projects/rochondra/">Continue with Rochondra</a></p>

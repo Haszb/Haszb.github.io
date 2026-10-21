@@ -321,8 +321,8 @@ hr {
 
 .prose h2 {
   font-size: var(--step-2);
-  margin-top: 2.6em;
-  padding-top: 1.4rem;
+  margin-top: 1.6em;
+  padding-top: 1.2rem;
   border-top: 1px solid var(--rule);
 }
 

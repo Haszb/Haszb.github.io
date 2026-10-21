@@ -1,7 +1,7 @@
 ---
 title: Bitcoin, analyse du prix
 kicker: Séries temporelles · Deep learning · Projet personnel
-summary: L’historique des prix suffit-il, à lui seul, à prévoir le cours du Bitcoin ? Ce projet a traité la question de bout en bout, du pipeline de données à l’analyse de marché, jusqu’à 168 entraînements de réseaux de neurones, tous consignés. Aucun n’a produit de prévision exploitable. C’est ce résultat qui a finalement mené à Rochondra.
+summary: L’historique des prix suffit-il, à lui seul, à prévoir le cours du Bitcoin ? Ce projet a exploré la question de bout en bout, de la collecte de données à l’analyse de marché, jusqu’à l’entraînement de 168 réseaux de neurones, tous consignés. Aucun n’a produit de prévision exploitable. C’est ce résultat qui a finalement mené à Rochondra.
 featured: true
 page: true
 order: 2
@@ -19,11 +19,11 @@ import Stats from '../../../components/Stats.astro';
 
 ## La question
 
-De nombreux exemples de prévision du Bitcoin prédisent un pas à la fois, puis fournissent au modèle le prix réel avant la prévision suivante. Ils évaluent ainsi une suite de prévisions à court terme, et non le comportement d’un modèle qui doit s’appuyer sur ses propres prédictions. Ce projet posait une question plus exigeante : **l’historique du prix BTC/USDT permet-il, à lui seul, une prévision utile à plusieurs pas lorsque le modèle doit s’appuyer sur ses propres prédictions ?**
+De nombreux exemples de prévision du Bitcoin prédisent un pas à la fois, puis fournissent au modèle le prix réel avant de calculer la prévision suivante. Ils évaluent ainsi une suite de prévisions successives à court terme, mais ne reproduisent pas le comportement d’un modèle qui doit s’appuyer sur ses propres prédictions. Ce projet pose une question plus exigeante : **l’historique des prix BTC/USDT contient-il, à lui seul, un signal permettant de prévoir plusieurs pas à l’avance, lorsque le modèle ne peut que s’appuyer sur ses propres prédictions ?**
 
 ## Les données
 
-La première étape a été un pipeline automatisé qui récupère les bougies horaires de Binance, suivi d’une analyse exploratoire du marché de janvier 2022 à octobre 2025. Au-delà du prix, l’analyse couvrait les volumes, le nombre de transactions, la pression acheteurs et vendeurs, la distribution de la taille des transactions et la volatilité normalisée.
+Le travail a commencé par la construction d’un pipeline automatisé qui récupère les bougies horaires de Binance, suivi d’une analyse exploratoire du marché entre janvier 2022 et octobre 2025. Au-delà du prix, l’analyse portait sur les volumes, le nombre de transactions, la pression acheteuse et vendeuse, la distribution de la taille des transactions et la volatilité normalisée.
 
 <Stats
   items={[
@@ -41,37 +41,51 @@ La première étape a été un pipeline automatisé qui récupère les bougies h
   source="Source : bougies horaires Binance."
 />
 
-L’analyse a également mis en évidence un marché porté surtout par de petites transactions, avec relativement peu de traces de grosses exécutions individuelles sur cette plateforme, et un rythme annuel récurrent dans la taille des transactions. Elle a aussi montré que **2025 s’écarte du schéma observé les années précédentes**. La saisonnalité habituelle disparaît, et les transactions rapetissent alors même que le prix grimpe. C’est cette rupture qui a conduit à entraîner les modèles sur les seules données de 2025.
+L’analyse a également fait ressortir un marché porté surtout par des transactions de faible montant, avec relativement peu de traces de grosses transactions individuelles sur la plateforme. Une saisonnalité annuelle de la taille des transactions a aussi été mise en évidence, ainsi qu’une **rupture apparente en 2025 : le schéma observé les années précédentes disparaît**, et la taille des transactions diminue alors même que le prix augmente.
+
+Ces observations concernent les données de Binance étudiées et ne permettent pas, à elles seules, de décrire l’ensemble du marché Bitcoin.
+
+Cette rupture a motivé une contrainte : entraîner les modèles uniquement sur les données de 2025.
 
 <Chart
   kind="heatmap"
   lang="fr"
   height={300}
   label="Carte de chaleur de la taille médiane des transactions par mois et par année, 2022 à 2025"
-  caption="Taille médiane des transactions en USDT, par mois et par année. De 2022 à 2024, le premier semestre est plus élevé que le second. En 2025, les montants restent bas toute l’année."
+  caption="Distribution mensuelle de la taille médiane des transactions, en USDT, par année. De 2022 à 2024, les montants sont généralement plus élevés au premier semestre. En 2025, ils restent bas tout au long de l’année."
 />
 
 ## L’expérience
 
-Les modèles étaient des réseaux de neurones récurrents (LSTM, GRU et SimpleRNN), évalués en **prévision walk-forward autorégressive**. Chaque modèle recevait une fenêtre initiale de prix observés (24 heures par défaut). Au-delà de cette fenêtre, chaque prévision reposait sur les prédictions précédentes du modèle, et non sur de nouveaux prix observés. Les modèles étaient ainsi exposés à l’accumulation d’erreurs qu’ils subiraient dans une vraie prévision à plusieurs pas. Les données ont été découpées chronologiquement pour éviter toute fuite d’information, et les graines aléatoires fixées pour améliorer la reproductibilité.
+Les modèles testés étaient trois architectures de réseaux de neurones récurrents : LSTM, GRU et SimpleRNN, évalués selon une stratégie de prévision récursive *walk-forward*.
+
+Chaque modèle recevait une fenêtre initiale de prix observés (24 heures par défaut). Au-delà, chaque prévision reposait sur les prédictions précédentes du modèle plutôt que sur de nouvelles observations réelles. Cette approche permet d’examiner comment les erreurs s’accumulent lorsque le modèle s’éloigne des données connues.
+
+Les données ont été découpées chronologiquement pour éviter toute fuite d’information entre entraînement et test, et les graines aléatoires ont également été fixées pour améliorer la reproductibilité.
 
 <Chart
   kind="walkforward"
   lang="fr"
   label="Prévision walk-forward d’un LSTM à deux couches comparée aux prix réels, septembre 2025"
-  caption="Un résultat typique, obtenu avec un LSTM à deux couches. Après 24 heures de contexte réel, la prévision dérive vers une ligne plate alors que le prix réel continue de bouger. MAE de 2 879 USDT et RMSE de 3 386 USDT sur les 12 jours de test."
+  caption="Exemple de résultat obtenu avec un LSTM à deux couches. Après une fenêtre initiale de 24 heures de prix observés, la prévision tend vers une ligne plate alors que le prix réel continue d’évoluer. Sur les 12 jours de test, l’erreur absolue moyenne (MAE) atteint 2 879 USDT et la racine de l’erreur quadratique moyenne (RMSE), 3 386 USDT."
 />
 
-Les métriques agrégées comme la MAE ou la RMSE ne montrent pas comment une prévision à plusieurs pas évolue dans le temps. Une prédiction peut sembler proche du prix observé par chance, ou simplement parce qu’elle suit la tendance générale. L’erreur a donc aussi été suivie à chaque pas (erreur absolue en pourcentage), et chaque entraînement a été inspecté visuellement.
+Les métriques agrégées comme la MAE ou la RMSE ne suffisent pas à montrer comment une prévision récursive évolue dans le temps. Une erreur globale peut masquer une dérive progressive, des oscillations artificielles ou une prévision qui reste proche du prix par simple inertie, comme c’est le cas dans l’exemple ci-dessus.
 
-Pour écarter l’hypothèse d’une mauvaise configuration, sept hyperparamètres ont été variés un à un (fenêtre d’entrée, taille de batch, taux d’apprentissage, unités, dropout, profondeur et fonction de perte) sur les trois architectures, d’abord sur les prix bruts puis sur les log-rendements, plus stationnaires. Au total, **168 entraînements ont été consignés dans MLflow**. Un tableau de bord Dash a été construit pour les comparer côte à côte. La version interactive ci-dessous permet d’explorer les résultats exportés directement dans le navigateur.
+L’erreur absolue en pourcentage a donc également été suivie à chaque pas, et les résultats de chaque entraînement ont été examinés visuellement.
+
+Pour écarter l’hypothèse d’une mauvaise configuration, sept hyperparamètres ont été variés individuellement : taille de la fenêtre d’entrée, taille du batch, taux d’apprentissage, unités, dropout, profondeur du réseau et fonction de perte.
+
+Les trois architectures ont été testées sur les prix bruts, puis sur les log-rendements, une représentation qui peut faciliter la modélisation de séries financières non stationnaires.
+
+Au total, **168 entraînements ont été consignés dans MLflow**. Un tableau de bord Dash a été construit pour les comparer côte à côte.
 
 <Chart
   kind="grid"
   lang="fr"
   label="Petits graphiques multiples comparant les prévisions selon les valeurs d’un hyperparamètre"
-  caption="Choisissez une représentation des données, une architecture et un hyperparamètre. Chaque panneau montre une valeur de cet hyperparamètre, avec les prix réels dont part le modèle (vert, de la longueur de la fenêtre d’entrée), le prix réel (bleu) et la prévision (rouge)."
-  source="Données : les 168 entraînements consignés par l’expérience, exportés depuis MLflow."
+  caption="L’interface interactive permet de sélectionner la représentation des données, l’architecture et l’hyperparamètre à examiner. Chaque panneau compare les prix observés et la prévision du modèle, en distinguant la fenêtre initiale de données réelles de la trajectoire prédite."
+  source="Données : les 168 entraînements consignés dans MLflow."
 />
 
 ## Le résultat
@@ -79,21 +93,21 @@ Pour écarter l’hypothèse d’une mauvaise configuration, sept hyperparamètr
 **Aucun des 168 entraînements n’a produit de prévision assez fiable pour être utile.**
 
 - Les **LSTM** ont systématiquement dérivé vers des prédictions relativement plates, sans saisir les mouvements de prix qui suivaient.
-- Les **GRU** ont eu un comportement similaire dans de nombreux entraînements. Dans les autres, ils ont produit des oscillations qui ressemblaient à des mouvements de marché, mais reproduisaient en grande partie des motifs de la séquence d’entrée.
+- Dans de nombreux entraînements, les **GRU** ont eu un comportement similaire. Dans d’autres, ils ont produit des oscillations qui ressemblaient à des mouvements de marché, mais reproduisaient en grande partie le motif de la séquence d’entrée.
 - Les **SimpleRNN** ont montré la plus grande variété de comportements, des motifs répétés aux trajectoires invraisemblables, sans produire de prévision convaincante.
 
-Passer des prix bruts aux log-rendements a rendu la série plus stationnaire sans changer la conclusion. Certaines prévisions se sont aplaties vers zéro ; d’autres reproduisaient des motifs oscillants sans suivre le marché de façon fiable.
+Passer des prix bruts aux log-rendements a rendu la série plus stationnaire sans changer la conclusion. Certaines prévisions ont convergé vers zéro ; d’autres ont reproduit des oscillations sans suivre le marché de façon fiable.
 
-Ces expériences n’ont pas établi que le prix du Bitcoin soit intrinsèquement imprévisible. Elles ont montré quelque chose de plus restreint, mais d’utile : ces architectures et ces configurations n’ont pas su extraire de signal de prévision robuste de l’historique de prix disponible, en évaluation récursive.
+Ces expériences n’ont pas établi que le prix du Bitcoin soit intrinsèquement imprévisible. Elles montrent plus précisément que les architectures, les configurations et les données testées n’ont pas permis d’extraire un signal de prévision robuste dans le cadre de cette évaluation récursive.
 
-## Pourquoi cela a mené à Rochondra
+## Pourquoi cette expérience a conduit à Rochondra
 
 Le prix est un résultat, pas une explication complète des forces qui le produisent. Son historique reflète les effets combinés de l’information, des acteurs du marché et de conditions changeantes, dont beaucoup ne sont pas directement observables dans la série de prix elle-même.
 
-Après 168 entraînements, rien ne montrait de façon convaincante que cette approche puisse produire des prévisions utiles. Ajouter des variables externes était une suite possible, mais cela aurait fait du projet un tout autre problème, dans un domaine déjà très concurrentiel.
+Après 168 entraînements, rien ne montrait de façon convaincante que cette approche puisse produire des prévisions utiles. Ajouter des variables externes était une piste pertinente, mais aussi un changement de périmètre dans un domaine de recherche déjà très concurrentiel.
 
-Le projet a donc pris une autre direction : étudier les entrées et les décisions qui façonnent un résultat, plutôt que chercher à le prédire.
+Une autre possibilité consistait à changer de question : plutôt que de chercher à prévoir le prix d’un actif, étudier les projets qui le sous-tendent.
 
-Cette idée est devenue Rochondra : une tentative de comprendre les projets à travers les traces qu’ils laissent en se construisant, à commencer par leurs whitepapers. La décision est consignée comme première entrée du [journal des décisions](https://github.com/Haszb/Rochondra/blob/main/docs/decision-log.md#d1-measuring-inputs-instead-of-predicting-price) de Rochondra (en anglais), et le raisonnement complet est détaillé dans [Why I stopped predicting Bitcoin prices and chose a new direction](https://medium.com/@rochondra.lab/a-new-direction-89003b3017d9) (en anglais).
+Cette idée est devenue Rochondra : une méthode pour comprendre les projets à travers les traces qu’ils laissent au cours de leur développement, en commençant par leurs whitepapers. La décision est consignée comme première entrée du [journal des décisions](https://github.com/Haszb/Rochondra/blob/main/docs/decision-log.md#d1-measuring-inputs-instead-of-predicting-price) de Rochondra (en anglais), et le raisonnement complet est détaillé dans [Why I stopped predicting Bitcoin prices and chose a new direction](https://medium.com/@rochondra.lab/a-new-direction-89003b3017d9) (en anglais).
 
 <p><a class="arrow-link" href="/fr/projects/rochondra/">Continuer avec Rochondra</a></p>
