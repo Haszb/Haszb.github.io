@@ -1,5 +1,6 @@
 ---
 // A row of key figures. Usage in MDX: <Stats items={[{ value: '5,880', label: 'PDFs retrieved' }]} />
+// Children (e.g. <EraBar />) are drawn in the same frame, below the row.
 interface Props {
   items: { value: string; label: string; note?: string }[];
 }
@@ -7,22 +8,30 @@ interface Props {
 const { items } = Astro.props;
 ---
 
-<dl class="stats">
+<div class="stats">
+  <dl>
+    {
+      items.map((s) => (
+        <div>
+          <dd class="mono">{s.value}</dd>
+          <dt>{s.label}</dt>
+          {s.note && <dd class="note">{s.note}</dd>}
+        </div>
+      ))
+    }
+  </dl>
   {
-    items.map((s) => (
-      <div>
-        <dd class="mono">{s.value}</dd>
-        <dt>{s.label}</dt>
-        {s.note && <dd class="note">{s.note}</dd>}
+    Astro.slots.has('default') && (
+      <div class="extra">
+        <slot />
       </div>
-    ))
+    )
   }
-</dl>
+</div>
 
 <style>
   .stats {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
     gap: 1px;
     margin: 2rem 0;
     background: var(--rule);
@@ -31,12 +40,24 @@ const { items } = Astro.props;
     overflow: hidden;
   }
 
-  .stats div {
+  dl {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1px;
+    margin: 0;
+  }
+
+  dl > div {
     flex: 1 1 9.5rem;
     display: flex;
     flex-direction: column;
     gap: 0.3rem;
     padding: 1rem 1.1rem 1.1rem;
+    background: var(--paper);
+  }
+
+  .extra {
+    padding: 1.1rem;
     background: var(--paper);
   }
 

@@ -1,7 +1,7 @@
 ---
 title: Rochondra
 kicker: NLP · Data engineering · Document analysis
-summary: Many investors lack the time or expertise to analyse crypto whitepapers, and analyst ratings have proven overly optimistic. Rochondra is building a way to measure these documents, placing each one among thousands of others with indicators drawn from the research literature.
+summary: Many investors lack the time or expertise to analyse crypto whitepapers, while research has documented conflicts of interest and overly optimistic assessments in the ICO analyst ecosystem. Rochondra is building a way to measure these documents, placing each one among thousands of others with indicators drawn from the research literature.
 featured: true
 page: true
 order: 1
@@ -26,21 +26,35 @@ import Roadmap from '../../../components/Roadmap.astro';
 
 ## The problem
 
-In an unregulated market, the whitepaper is one of the few quality signals available before a project raises money, and one of the costliest for a weak project to fake. Yet it is largely ignored. About half of investors look at it, a third try to analyse it, and many lack the time or expertise to get through it.
+A crypto whitepaper serves two purposes: it describes a project and promotes it. This dual role makes it an important source of information, but not an independent guarantee of quality.
 
-Analysts often skip it too. They judge what is easy to see (the team, the community, social media), and their ratings lean optimistic, because a good rating on a successful project brings advisory work on the next one. Two-thirds of ICOs fail, and even with a positive rating from the best analysts, the failure rate only falls to just over half.
+Investors must often evaluate projects with limited operating history, incomplete information and substantial technical complexity. Research on the ICO ecosystem has found that roughly half of investors consult whitepapers, while a smaller proportion analyse them in detail. Many lack the time or expertise to assess their contents independently.
 
-The document itself still carries information. Research has linked measurable features (length, readability, language errors, tone) to what later happens to a project. None of them decides the outcome, but all of them can be observed early. What is missing is scale: no existing tool compares one document with thousands of others against the same criteria.
+Intermediaries do not necessarily solve the problem. Research on ICO analysts has documented optimistic rating patterns and conflicts of interest, including incentives to secure future advisory work. One study reported that 64% of ICOs failed, including 53% of projects that received positive ratings from top-quartile experts. These are historical findings from the ICO ecosystem, not estimates of failure rates across today's entire crypto market.
+
+Yet the documents themselves contain measurable information. Research has examined features such as readability, length, language errors and narrative tone in relation to project characteristics and subsequent outcomes.
+
+None of these features can establish whether a project is legitimate or predict its success on its own. Their value lies in providing observable signals that can be measured consistently and examined alongside other evidence.
+
+The challenge is to move from isolated document analysis to systematic comparison across a large corpus.
 
 ## The approach: measure, don't rate
 
-Rochondra does not offer another opinion on whitepapers. It offers a measurement. The indicators come from the scientific literature rather than being invented for the purpose, and the calculation method is published alongside the results, so anyone can check and challenge it.
+Rochondra began with the idea of building a fundamentals score. That approach raised two problems.
 
-The output is a set of raw values and the document's **position within a distribution** of thousands of others. There is no aggregate score, no risk level and no recommendation. The measurements describe the document, not the project or the people behind it.
+First, without a reliable labelled dataset, assigning weights to different indicators would introduce subjective assumptions that would be difficult to validate. Second, existing research on ICO ratings has documented structural biases and conflicts of interest that make a single composite rating difficult to interpret.
+
+The project therefore took a different direction: measure first, interpret second.
+
+Indicators are selected from published research where possible, and their calculation methods are documented. Rather than producing an aggregate score, risk category or investment recommendation, Rochondra reports raw measurements and each document's position within the corresponding corpus distribution.
+
+A whitepaper can therefore be compared with other documents on specific dimensions without collapsing those differences into a single number.
+
+This distinction matters. The measurements describe the document, not the overall quality of the project or the people behind it. Their relevance depends on the research supporting each indicator, the quality of the underlying corpus and the limits of the measurement itself.
 
 ## Building the corpus
 
-The corpus was built from CoinMarketCap, the only source found that provides whitepaper links for free across a broad enough range of projects. On the live web, only about one whitepaper in five is still reachable, so dead links were recovered from the Internet Archive with a parallel collector.
+The corpus was built from CoinMarketCap, the only source found that provides whitepaper links for free across a broad collection of projects. On the live web, only about one whitepaper in five is still reachable, so dead links were recovered from the Internet Archive with a parallel collector.
 
 <Stats
   items={[
@@ -49,11 +63,15 @@ The corpus was built from CoinMarketCap, the only source found that provides whi
     { value: '5,300', label: 'with extractable text' },
     { value: '14.7 → 71.7%', label: 'recovery rate for 2017–2019 after archive recovery' },
   ]}
-/>
+>
+  <EraBar lang="en" />
+</Stats>
 
-Every failure is recorded, so the share of documents lost is known, and the biases inherited from the archive (truncation, selection) are measured against a known denominator. The corpus is mostly post-ICO, which matters because most of the research behind the indicators was based on ICO-era documents.
+Every attempt is recorded, including failed retrievals, so the share of documents lost is known, and the biases inherited from the archive (truncation, selection) are measured against a known denominator.
 
-<EraBar lang="en" />
+The corpus is not a random sample of all crypto whitepapers. It reflects CoinMarketCap's coverage, the survival of old documents and the limits of PDF extraction, and these constraints stay visible in every analysis.
+
+It is also mostly post-ICO, while most of the research behind the indicators was based on ICO-era documents. An indicator validated on 2018 whitepapers may not behave the same way on documents written for newer project models, so the balance between eras is part of the research, not just data preparation.
 
 ## Architecture
 
@@ -61,12 +79,14 @@ The project was designed from day one as an application that runs the same way l
 
 <Architecture lang="en" />
 
+The architecture separates document processing, API access and persistence. This makes individual components easier to test, replace and extend without coupling the analysis logic to the interface or storage implementation.
+
 ## Four decisions that shaped it
 
-The [decision log](https://github.com/Haszb/Rochondra/blob/main/docs/decision-log.md) records 28 decisions so far, each with the problem it solves, the alternatives ruled out and the cost accepted. Four of them explain most of the project's shape.
+The [decision log](https://github.com/Haszb/Rochondra/blob/main/docs/decision-log.md) records the problems, alternatives and trade-offs behind the project's main technical choices. Four decisions explain much of its current direction.
 
 <Decision id="D6" title="Deterministic first, the LLM as arbiter" anchor="d6-deterministic-first-the-llm-as-arbiter" cost="Every model call needs the problem structured upstream, and generated text must stay identifiable so it can be kept out of the measurements.">
-  LLMs are non-deterministic, which is incompatible with a corpus whose rows must be comparable. Measurements therefore rely on proven deterministic methods. Where documents push those methods to their limits (extracting a table of contents, for example), a model only confirms or chooses between candidates produced upstream. It never generates an answer of its own.
+  LLMs are non-deterministic, which is incompatible with a corpus whose rows must be comparable. Measurements therefore favour proven deterministic methods. Where document structure creates ambiguity, an LLM can select between candidates produced by earlier processing steps, but can never generate an answer of its own.
 </Decision>
 
 <Decision id="D21" title="Measurements rather than ratings" anchor="d21-measurements-rather-than-ratings" cost="Harder to read at a glance, and no overall ranking, even though some users will expect one.">
@@ -74,7 +94,7 @@ The [decision log](https://github.com/Haszb/Rochondra/blob/main/docs/decision-lo
 </Decision>
 
 <Decision id="D24" title="Recovery through the Internet Archive" anchor="d24-recovery-through-the-internet-archive" cost="The corpus inherits the archive's biases, which are measured and reported with every analysis rather than hidden.">
-  Keeping only documents still online would have produced a corpus of survivors. Querying the Internet Archive for every dead URL rebuilt most of the ICO era, the period hit hardest by vanished websites.
+  Keeping only documents still online would have produced a corpus of survivors. Querying the Internet Archive made it possible to recover a substantial part of the missing ICO-era corpus, the period hit hardest by vanished websites.
 </Decision>
 
 <Decision id="D16" title="Three storage layers, one role each" anchor="d16-three-storage-layers-one-role-each" cost="Three systems to run instead of one.">
@@ -83,8 +103,16 @@ The [decision log](https://github.com/Haszb/Rochondra/blob/main/docs/decision-lo
 
 ## Where it stands
 
-The pipeline is a working prototype. It takes a PDF through text extraction, structural indicators, table-of-contents detection and per-section sentiment. The work is organised in phases ordered by dependency rather than by date, because availability is irregular and a schedule would be fiction. Each phase has a verifiable exit criterion and ends with something public: an article, a site update, or both.
+The project has moved beyond the initial research and notebook stage. A working prototype processes PDF whitepapers through text extraction, structural measurements, table-of-contents detection and section-level sentiment analysis.
+
+Development is organised in phases ordered by dependency rather than by calendar dates. Each phase has a verifiable exit criterion and ends with something public: an article, a site update, or both.
 
 <Roadmap lang="en" current={1} />
 
 Phase 1 runs the whole chain once on a small scale: 210 whitepapers, 70 per era, checked by hand, measured with structural indicators and published on the project's own site with its methodology. The full plan, card by card, is in the [roadmap](https://github.com/Haszb/Rochondra/blob/main/docs/roadmap.md).
+
+## What comes next
+
+The project's framework has five pillars: team, technology and code, tokenomics, documentation and community. Whitepapers belong to documentation, the first pillar to be addressed. They come first because they are public, can be processed in batches and state what a project intends to do. The longer-term aim is to compare what projects claim with what can be observed elsewhere, once the document methodology has been validated.
+
+Price prediction, trading signals and investment recommendations are outside the project's scope.
