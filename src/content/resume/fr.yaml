@@ -1,0 +1,82 @@
+# CV, version française : texte de Hassan, mêmes rubriques et même ordre que en.yaml.
+# Dates en chiffres (02/2025) : les mois en toutes lettres ne tiennent pas sur une ligne dans la colonne des dates.
+#
+# Quote any value that contains a colon followed by a space, or the file breaks silently.
+# To add a role, copy a block under `experience` (from `- company:` to the end of its bullets).
+
+# Path to the PDF offered by the Download button (the file lives in public/; it is in English).
+pdf: /hassan-zbib-resume.pdf
+
+availability: France · Nationalité européenne · Mobilité géographique et télétravail possibles
+
+experience:
+  - company: Rochondra Lab
+    title: Fondateur et Product Owner technique
+    period: depuis 02/2026
+    place: France
+    intro: >-
+      Développement d’une plateforme d’analyse basée sur l’IA, conçue pour mesurer les whitepapers de projets crypto et les positionner parmi plusieurs milliers d’autres à partir d’indicateurs issus de la recherche scientifique.
+    bullets:
+      - Définition du MVP autour du pilier documentaire d’un cadre d’évaluation à cinq piliers, privilégiant des métriques brutes et un positionnement par distribution plutôt qu’un score composite
+      - 'Constitution d’un corpus de 5 880 whitepapers et développement d’un pipeline d’analyse (FastAPI, Streamlit) : extraction des PDF, calcul de métriques de lisibilité, reconstruction des tables des matières, synthèse et analyse de sentiment par section (FinBERT, DistilBART)'
+      - Conception d’une architecture conteneurisée, prête pour un déploiement cloud (PostgreSQL, MinIO, Redis et Docker). Utilisation des LLM (Ollama) limitée à l’arbitrage des cas ambigus afin de préserver la reproductibilité des mesures
+      - Priorisation du backlog selon l’impact sur les étapes suivantes et le coût du retard. Formalisation de 28 décisions produit et architecture dans un journal de décisions public ainsi qu’une note de cadrage
+
+  - company: TELUS Digital AI Data Solutions · Freelance
+    title: Data Quality Analyst
+    period: 02/2025 – 09/2025
+    place: France · À distance
+    intro: >-
+      Évaluation de résultats produits par des systèmes d’IA et des LLM suivant le respect de référentiels de qualité, sur des cas d’usage multilingues et multimodaux (texte, images, audio). Expérience concrète des exigences de qualité applicables aux produits d’IA en production.
+    bullets:
+      - Classement régulier parmi les meilleurs évaluateurs en matière de productivité et de précision
+      - Obtention de certifications internes pour élargir le périmètre des tâches à la géolocalisation et à l’évaluation de l’IA générative
+
+  - company: Fox Security
+    title: Chef de projet
+    period: 11/2020 – 09/2022
+    place: Brest, France · Sur site
+    intro: >-
+      Société internationale de courtage spécialisée dans les solutions de sécurité clés en main pour des
+      sites sensibles en Afrique et au Moyen-Orient.
+    bullets:
+      - Analyse des besoins clients, exprimés directement ou dans le cadre d’appels d’offres publics, identification des prestataires adaptés et coordination de leurs interventions en France et en Europe
+      - Consolidation des contributions de prestataires spécialisés en dossiers de proposition cohérents, fiables et directement exploitables par les équipes commerciales
+      - Coordination des échanges entre les parties prenantes tout au long du cycle de vie des projets afin de maintenir leur alignement et de faciliter l’exécution des prestations
+
+  - company: KZ International Group
+    title: Coordinateur de projets
+    period: 05/2017 – 09/2020
+    place: Brest, France · Sur site
+    intro: Entreprise de commerce international spécialisée dans la commercialisation d’une gamme diversifiée de produits.
+    bullets:
+      - Analyse des besoins clients et conception de solutions sur mesure, adaptées à leurs exigences et aux objectifs commerciaux
+      - Recherche, sélection et négociation avec les fournisseurs sur une gamme de produits variée, afin d’obtenir des prix et des conditions commerciales avantageux
+      - Réduction de 15 % des coûts d’entretien de l’entrepôt grâce à l’optimisation des processus et à la renégociation des conditions des prestataires
+      - Encadrement d’équipes saisonnières pouvant compter jusqu’à 12 personnes lors des pics d’activité, avec une attention particulière portée à leur efficacité et à leur engagement
+
+education:
+  - school: Liora en partenariat avec Mines Paris – PSL
+    degree: Machine Learning Engineering & Chef de projet IA
+    period: 08/2023 – 06/2024
+    place: France · À distance
+    details: Certification professionnelle RNCP 7 de niveau Master
+
+  - school: Université de Bretagne Occidentale – Institut universitaire européen de la mer
+    degree: Master 2 Sciences Chimiques de l’Environnement Marin
+    period: 09/2010 – 06/2012
+    place: Brest, France
+
+skills:
+  - label: Certifications
+    items: AWS Solutions Architect (SAA-C03)
+  - label: Produit et projet
+    items: Recueil des besoins, user stories, cadrage de MVP, Agile/Scrum, Jira
+  - label: Technique
+    items: Python, SQL, NLP/LLM (Hugging Face), cloud (AWS), MLOps
+  - label: Savoir-être
+    items: Gestion des parties prenantes, coordination d’équipe, résolution de problèmes, communication, adaptabilité
+  - label: Langues
+    items: Français (langue maternelle), anglais (bilingue)
+  - label: Centres d’intérêt
+    items: Karaté, randonnée, lecture, voyages

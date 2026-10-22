@@ -17,7 +17,7 @@ experience:
     intro: >-
       Building an AI-powered platform that benchmarks crypto whitepapers against thousands of documents using research-backed indicators.
     bullets:
-      - Scoped the MVP to the documentation pillar of a five-pillar evaluation framework, and replaced the planned composite score with transparent raw metrics and distribution-based positioning after identifying conflicts of interest in existing rating platforms
+      - Scoped the MVP to the documentation pillar of a five-pillar evaluation framework, and replaced the planned composite score with transparent raw metrics and distribution-based positioning
       - Built a corpus of 5,880 whitepapers and an analysis pipeline (FastAPI, Streamlit) covering PDF extraction, readability metrics, table-of-contents reconstruction, and section-level summarisation and sentiment analysis (FinBERT, DistilBART)
       - Designed a containerised, cloud-ready architecture (PostgreSQL, MinIO, Redis, Docker), using LLMs (Ollama) only to arbitrate ambiguous cases, keeping measurements reproducible
       - Prioritised the backlog by downstream impact and cost of delay, and documented 28 product and architecture decisions in a public decision log and project brief
@@ -56,14 +56,14 @@ experience:
       - Supervised seasonal teams of up to 12 employees during peak periods, maintaining operational efficiency and team engagement
 
 education:
-  - school: Liora and Mines Paris – PSL
+  - school: Liora in partnership with Mines Paris – PSL
     degree: Machine Learning Engineering & AI Project Management
     period: Aug 2023 – Jun 2024
-    place: Remote, France
-    details: 'Postgraduate-Level Professional Qualification – French RNCP certified · EQF Level 7'
+    place: France · Remote
+    details: Professional certification, RNCP level 7 (Master’s level)
 
-  - school: Université de Bretagne Occidentale - European Institute for Marine Studies
-    degree: MSc Chemistry of the Marine Environment
+  - school: Université de Bretagne Occidentale – European Institute for Marine Studies
+    degree: MSc Chemical Sciences of the Marine Environment
     period: Sep 2010 – Jun 2012
     place: Brest, France
 

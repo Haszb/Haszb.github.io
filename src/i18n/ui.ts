@@ -49,7 +49,7 @@ export const ui = {
     'nav.resume': 'CV',
     'tabs.label': 'Rubriques',
     'resume.title': 'CV',
-    'resume.download': 'Télécharger le PDF',
+    'resume.download': 'Télécharger le PDF (en anglais)',
     'resume.experience': 'Expérience',
     'resume.education': 'Formation',
     'resume.skills': 'Compétences',
