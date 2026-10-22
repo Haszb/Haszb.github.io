@@ -406,13 +406,27 @@ const description =
     border-bottom: 1px solid var(--rule);
   }
 
+  /* One line, centred while it fits and scrolling sideways when it does not (the auto
+     margins centre without making the start unreachable, unlike justify-content). The bar
+     hangs 1px over the row's rule so the underline, clipped by the scroll box, still lands on it,
+     and spreads into the gutters so the labels scroll out at the screen edge. */
   .tabbar {
     position: relative;
     display: flex;
-    /* Temporary: wraps on narrow screens until the phone layout is decided */
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0 clamp(1.25rem, 3vw, 2.25rem);
+    gap: clamp(1.25rem, 3vw, 2.25rem);
+    margin: 0 calc(-1 * var(--gutter)) -1px;
+    padding-inline: var(--gutter);
+    overflow-x: auto;
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+  }
+
+  .tab:first-child {
+    margin-left: auto;
+  }
+
+  .tab:last-child {
+    margin-right: auto;
   }
 
   .tab {
@@ -439,7 +453,7 @@ const description =
   .tab::after {
     content: '';
     position: absolute;
-    inset: auto 0 -1px;
+    inset: auto 0 0;
     height: 2px;
     background: var(--accent);
     transform: scaleX(0);
@@ -457,13 +471,6 @@ const description =
   /* A link to #panel lands with the tab bar still visible above it */
   .panel {
     scroll-margin-top: 4.5rem;
-  }
-
-  /* The bar wraps onto two lines on phones */
-  @media (max-width: 40rem) {
-    .panel {
-      scroll-margin-top: 8rem;
-    }
   }
 
   .is-tabbed .panel {

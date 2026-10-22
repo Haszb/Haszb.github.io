@@ -2,11 +2,19 @@
 
 Personal portfolio of Hassan Zbib, in English (`/`) and French (`/fr/`). Built with [Astro](https://astro.build), deployed to GitHub Pages.
 
-## Status (20 October 2026)
+## Status (22 October 2026)
 
-The site is complete for a first version and builds cleanly (`npm run build`, `npm run check`: 0 errors). It has been checked in Firefox on desktop and phone widths, in light and dark mode. It is a local git repository (branch `main`, no remote yet) and **not yet published**.
+The site is complete for a first version and builds cleanly (`npm run build`, `npm run check`: 0 errors). It has been checked in Firefox on desktop and phone widths, in light and dark mode. It is **published** at <https://haszb.github.io> from the GitHub repository [Haszb/Haszb.github.io](https://github.com/Haszb/Haszb.github.io).
 
-**Latest changes (20 October)**
+**Latest changes (22 October)**
+
+- Published: the local repository was pushed to `Haszb/Haszb.github.io` (remote `origin`), Pages source set to GitHub Actions, first deployment succeeded. Every page and the chart data answer on the live site.
+- Pushing works over SSH as Haszb: `github.com` in `~/.ssh/config` uses the key `id_ed25519` (Haszb); the alias `github-compteB` uses `id_ed25519_compteB` (Rochondra-lab). `ssh -T git@github.com` should answer "Hi Haszb!".
+- Tab bar: one line at every width. It stays centred while it fits and scrolls sideways when it does not (at 400px the current four tabs overflow by about 40px), running out to the screen edges; opening a tab scrolls it into view. Desktop is unchanged.
+- Address: `haszb.github.io` is kept for now; a personal domain stays possible later (see "Publishing").
+- Inferred project periods and article reading times confirmed by Hassan.
+
+**Changes on 20 October**
 
 - Profile and project summaries reworded by Hassan (French profile, all French summaries, English Bitcoin and Rochondra); the English profile was brought in line with the French.
 - Featured cards: the kicker line (type · period) spans the whole card, the visual starts level with the title, and titles are 10% smaller ("Bitcoin, analyse du prix" fits on one line from 1000px wide). The Rochondra figures now read URLs tried, whitepapers retrieved, volume.
@@ -33,18 +41,20 @@ The site is complete for a first version and builds cleanly (`npm run build`, `n
 - Checked on a real phone over the local network (see "Running locally").
 - Justified text on desktop and tablet (left-aligned on phones): home introduction, featured project cards, project page summaries and body paragraphs. Headings, lists, labels and the three small project cards stay left-aligned.
 
-**Still to do before publishing**
+**Still to do**
 
+- [ ] The Rochondra case study links to `Haszb/Rochondra/blob/main/docs/roadmap.md`, which answers 404 (the file is not committed yet, or the repository is private). Now that the site is live, this link is broken for visitors: commit the roadmap (item below) or make the link point elsewhere.
 - [ ] Choose a resume version, then remove the other tab (`src/components/HomePage.astro`, `tabs` list) and its file in `src/content/resume/en/`.
-- [ ] Decide how the tab bar behaves on phones: it currently wraps onto two centred lines, and the selected tab's underline then floats between them. Proposed: one line that scrolls sideways (the script already keeps the selected tab in view). Choosing a single resume version also shortens the bar.
 - [ ] Then decide whether the intro role line changes to match the chosen resume.
 - [ ] Write the French resume (`src/content/resume/fr/<version>.yaml`). Until then the build warns "Entry resume → fr/… was not found"; that warning is expected.
 - [ ] Fix "comparable scores" in the PDF CV (contradicts D21), then replace `public/hassan-zbib-resume.pdf`.
 - [ ] Proofread the French text (drafted by Claude): profile, card summaries, both case studies, article summaries.
-- [ ] Check inferred details: project periods (Bitcoin 2025–2026, Rochondra 2026 – present, FloraFlow 2023, Cartofriches 2024; Rakuten 2024 is confirmed), article reading times.
 - [ ] Commit `_sources/roadmap.md` to the Rochondra repository as `docs/roadmap.md` (the Rochondra case study links there).
 - [ ] Optionally delete `src/content/profile/photo_cv_small.jpg` (the site uses the resized copy `public/img/photo.jpg`; git ignores the original).
-- [ ] Publish (see below).
+- [x] Publish (22 October).
+- [x] Tab bar on phones: one line that scrolls sideways (22 October).
+- [x] Address: keep `haszb.github.io` for now (22 October).
+- [x] Check inferred project periods and reading times (22 October).
 
 ## What the site contains
 
@@ -111,16 +121,9 @@ npm run check        # type and content checks
 
 ## Publishing
 
-1. Create the GitHub repository **`Haszb.github.io`** (exactly this name), then push this folder to its `main` branch:
-   ```bash
-   git init -b main
-   git add .
-   git commit -m "First version of the portfolio"
-   git remote add origin git@github.com:Haszb/Haszb.github.io.git
-   git push -u origin main
-   ```
-2. In the repository: Settings → Pages → Source: **GitHub Actions**.
-3. Each push to `main` rebuilds and publishes the site at <https://haszb.github.io> in about a minute (`.github/workflows/deploy.yml`).
+The repository is [Haszb/Haszb.github.io](https://github.com/Haszb/Haszb.github.io) (remote `origin`), with Settings → Pages → Source set to **GitHub Actions**. To publish, commit and run `git push`: each push to `main` rebuilds and publishes the site at <https://haszb.github.io> in about a minute (`.github/workflows/deploy.yml`). Follow the run in the repository's Actions tab; a failed run leaves the previous version online.
+
+Only the "Deploy to GitHub Pages" workflow should run. If a "pages build and deployment" run appears, the Pages source has been switched back to "Deploy from a branch", which would publish the raw files instead of the built site.
 
 Custom domain later: add a `public/CNAME` file containing the domain, change `site` in `astro.config.mjs`, and configure DNS as GitHub describes.
 

@@ -19,6 +19,8 @@ The site is static. Data features (Supabase, the whitepaper explorer, deciles) b
 
 ## Gotchas
 
+- The site is live: `git push` to `main` publishes it at haszb.github.io within a minute. Commit and push only after Hassan says yes to each.
+- Two GitHub accounts share this machine: `git@github.com` authenticates as Haszb (this repo), the SSH alias `github-compteB` as Rochondra-lab. `gh` is not installed; check deployment runs through the public API (`api.github.com/repos/Haszb/Haszb.github.io/actions/runs`).
 - Node is user-local: prefix shell commands with `export PATH=$HOME/.local/node/bin:$PATH`.
 - `npm run dev` and `astro preview` detach. Stop them with `npx astro dev stop` / `npx astro preview stop`.
 - YAML values containing `: ` must be quoted (`articles.yaml` fails silently and the collection comes out empty; the build only warns).
