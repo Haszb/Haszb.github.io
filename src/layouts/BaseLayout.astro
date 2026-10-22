@@ -59,7 +59,7 @@ const year = new Date().getFullYear();
         <nav aria-label={lang === 'fr' ? 'Navigation principale' : 'Main navigation'}>
           <ul>
             <li><a href={`${home}#projects`}>{t(lang, 'nav.projects')}</a></li>
-            <li class="wide-only"><a href={`${home}#resume-linkedin`}>{t(lang, 'nav.resume')}</a></li>
+            <li class="wide-only"><a href={`${home}#resume`}>{t(lang, 'nav.resume')}</a></li>
             <li class="wide-only"><a href={`${home}#writing`}>{t(lang, 'nav.writing')}</a></li>
             <li>
               <button
@@ -132,6 +132,97 @@ const year = new Date().getFullYear();
       });
       dark.addEventListener('change', label);
       label();
+
+      // The language link opens the twin page at the same point: same tab (URL fragment) and the
+      // same block under the header. Twin pages share their markup, so the block is found again by
+      // its position in the tree, then scrolled to the same fraction of its height.
+      const KEY = 'lang-switch';
+      const main = document.querySelector<HTMLElement>('main');
+      const header = document.querySelector<HTMLElement>('.site-header');
+      const top = () => (header?.getBoundingClientRect().bottom ?? 0) + 1;
+      const isBlock = (el: Element) => getComputedStyle(el).display !== 'inline';
+
+      function blockAtTop(): Element | null {
+        if (!main) return null;
+        const box = main.getBoundingClientRect();
+        // Try a few points across the row: the centre can fall in a gap between columns
+        for (const share of [0.5, 0.3, 0.7, 0.15]) {
+          let el = document.elementFromPoint(box.left + box.width * share, top());
+          while (el && el !== main && main.contains(el) && !isBlock(el)) el = el.parentElement;
+          if (el && el !== main && main.contains(el)) return el;
+        }
+        return null;
+      }
+
+      document.querySelector<HTMLAnchorElement>('a.lang')?.addEventListener('click', (event) => {
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        const link = event.currentTarget as HTMLAnchorElement;
+        const target = new URL(link.href);
+        target.hash = location.hash;
+        const el = blockAtTop();
+        if (el && main && scrollY > 0) {
+          const path: { i: number; tag: string }[] = [];
+          for (let node: Element = el; node !== main; node = node.parentElement!) {
+            path.unshift({ i: [...node.parentElement!.children].indexOf(node), tag: node.tagName });
+          }
+          const rect = el.getBoundingClientRect();
+          const fraction = rect.height ? (top() - rect.top) / rect.height : 0;
+          try {
+            sessionStorage.setItem(KEY, JSON.stringify({ to: target.pathname, path, fraction }));
+          } catch {
+            /* storage unavailable: the twin page opens at its top */
+          }
+        }
+        event.preventDefault();
+        location.href = target.href;
+      });
+
+      let saved: { to: string; path: { i: number; tag: string }[]; fraction: number } | null = null;
+      try {
+        saved = JSON.parse(sessionStorage.getItem(KEY) ?? 'null');
+        sessionStorage.removeItem(KEY);
+      } catch {
+        saved = null;
+      }
+      if (saved && main && saved.to === location.pathname) {
+        const { path, fraction } = saved;
+        const restore = () => {
+          // Follow the path as far as the twin's markup matches, then use the deepest visible block
+          let el: Element = main;
+          let exact = true;
+          for (const step of path) {
+            const child = el.children[step.i];
+            if (!child || child.tagName !== step.tag) {
+              exact = false;
+              break;
+            }
+            el = child;
+          }
+          while (el !== main && !el.getClientRects().length) {
+            el = el.parentElement!;
+            exact = false;
+          }
+          const rect = el.getBoundingClientRect();
+          const into = exact ? fraction * rect.height : 0;
+          scrollTo({ top: scrollY + rect.top + into - top() + 1, behavior: 'instant' });
+        };
+        // Charts drawn around the target change its height: hold the point while the layout settles,
+        // and let go as soon as the visitor scrolls
+        const settle = () => {
+          const observer = new ResizeObserver(restore);
+          observer.observe(main);
+          const release = () => {
+            observer.disconnect();
+            for (const type of ['wheel', 'touchstart', 'keydown', 'pointerdown']) removeEventListener(type, release);
+          };
+          for (const type of ['wheel', 'touchstart', 'keydown', 'pointerdown']) addEventListener(type, release, { passive: true });
+          setTimeout(release, 4000);
+        };
+        // Wait for the fonts and for the tab script's own scroll, which runs on the first frame
+        const run = () => document.fonts.ready.then(() => requestAnimationFrame(() => requestAnimationFrame(settle)));
+        if (document.readyState === 'complete') run();
+        else addEventListener('load', run, { once: true });
+      }
     </script>
   </body>
 </html>

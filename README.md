@@ -8,6 +8,7 @@ The site is complete for a first version and builds cleanly (`npm run build`, `n
 
 **Latest changes (22 October)**
 
+- Resume: the LinkedIn version, reworded by Hassan, is kept; the PDF version and its tab are gone. The tab bar now reads Projects | Resume | Writing, the resume tab lives at `/#resume` (the header's Resume link follows), and the file moved to `src/content/resume/en.yaml`.
 - Published: the local repository was pushed to `Haszb/Haszb.github.io` (remote `origin`), Pages source set to GitHub Actions, first deployment succeeded. Every page and the chart data answer on the live site.
 - Pushing works over SSH as Haszb: `github.com` in `~/.ssh/config` uses the key `id_ed25519` (Haszb); the alias `github-compteB` uses `id_ed25519_compteB` (Rochondra-lab). `ssh -T git@github.com` should answer "Hi Haszb!".
 - Tab bar: one line at every width. It stays centred while it fits and scrolls sideways when it does not (at 400px the current four tabs overflow by about 40px), running out to the screen edges; opening a tab scrolls it into view. Desktop is unchanged.
@@ -44,13 +45,13 @@ The site is complete for a first version and builds cleanly (`npm run build`, `n
 **Still to do**
 
 - [ ] The Rochondra case study links to `Haszb/Rochondra/blob/main/docs/roadmap.md`, which answers 404 (the file is not committed yet, or the repository is private). Now that the site is live, this link is broken for visitors: commit the roadmap (item below) or make the link point elsewhere.
-- [ ] Choose a resume version, then remove the other tab (`src/components/HomePage.astro`, `tabs` list) and its file in `src/content/resume/en/`.
-- [ ] Then decide whether the intro role line changes to match the chosen resume.
-- [ ] Write the French resume (`src/content/resume/fr/<version>.yaml`). Until then the build warns "Entry resume → fr/… was not found"; that warning is expected.
+- [ ] Decide whether the intro role line changes to match the resume (now "Founder & Technical Product Owner" at Rochondra Lab).
+- [ ] Write the French resume (`src/content/resume/fr.yaml`). Until then French pages show the English one, marked "(en anglais)", and the build warns "Entry resume → fr was not found"; that warning is expected.
 - [ ] Fix "comparable scores" in the PDF CV (contradicts D21), then replace `public/hassan-zbib-resume.pdf`.
 - [ ] Proofread the French text (drafted by Claude): profile, card summaries, both case studies, article summaries.
 - [ ] Commit `_sources/roadmap.md` to the Rochondra repository as `docs/roadmap.md` (the Rochondra case study links there).
 - [ ] Optionally delete `src/content/profile/photo_cv_small.jpg` (the site uses the resized copy `public/img/photo.jpg`; git ignores the original).
+- [x] Choose a resume version: LinkedIn (22 October).
 - [x] Publish (22 October).
 - [x] Tab bar on phones: one line that scrolls sideways (22 October).
 - [x] Address: keep `haszb.github.io` for now (22 October).
@@ -60,7 +61,7 @@ The site is complete for a first version and builds cleanly (`npm run build`, `n
 
 | Page | URL | Content |
 |---|---|---|
-| Home | `/`, `/fr/` | Photo and short bio, then a tab bar: projects (two featured, three training cards), resume (two versions while prototyping), Medium articles |
+| Home | `/`, `/fr/` | Photo and short bio, then a tab bar: projects (two featured, three training cards), resume, Medium articles |
 | Rochondra | `/projects/rochondra/` | Problem, approach, corpus figures, architecture diagram, decisions D6/D21/D24/D16, roadmap (Phase 1 in progress) |
 | Bitcoin | `/projects/bitcoin/` | Told as the origin of Rochondra: data, market analysis, RNN experiment, result, pivot. Four interactive charts |
 
@@ -82,7 +83,7 @@ All text lives in `src/content/`. You shouldn't need to touch anything else.
 | Articles (Medium list) | `src/content/articles.yaml` |
 | Rochondra case study | `src/content/projects/{en,fr}/rochondra.mdx` |
 | Bitcoin case study | `src/content/projects/{en,fr}/bitcoin.mdx` |
-| Resume (one file per version) | `src/content/resume/en/linkedin.yaml`, `src/content/resume/en/pdf.yaml` |
+| Resume | `src/content/resume/en.yaml` (French later in `fr.yaml`) |
 | Resume PDF (Download button) | `public/hassan-zbib-resume.pdf`: replace the file, keep the name |
 | Training project cards | `src/content/projects/{en,fr}/{rakuten,cartofriches,floraflow}.md` |
 | Interface labels (menu, buttons) | `src/i18n/ui.ts` |

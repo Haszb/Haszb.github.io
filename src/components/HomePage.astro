@@ -25,20 +25,14 @@ const academic = projects.filter((p) => !p.data.featured);
 const articles = (await getCollection('articles')).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 const p = profile.data;
 
-// Resume versions being compared during the prototype; French falls back to English.
-async function resumeVersion(version: string) {
-  const entry = (await getEntry('resume', `${lang}/${version}`)) ?? (await getEntry('resume', `en/${version}`));
-  if (!entry) throw new Error(`Missing src/content/resume/en/${version}.yaml`);
-  return entry;
-}
-const resumeLinkedin = await resumeVersion('linkedin');
-const resumePdf = await resumeVersion('pdf');
+// French falls back to the English resume until it is written
+const resume = (await getEntry('resume', lang)) ?? (await getEntry('resume', 'en'));
+if (!resume) throw new Error('Missing src/content/resume/en.yaml');
 
 // The tab bar under the intro. The first tab opens when the URL has no #fragment.
 const tabs: { id: string; label: UiKey }[] = [
   { id: 'projects', label: 'nav.projects' },
-  { id: 'resume-linkedin', label: 'tabs.resumeLinkedin' },
-  { id: 'resume-pdf', label: 'tabs.resumePdf' },
+  { id: 'resume', label: 'nav.resume' },
   { id: 'writing', label: 'nav.writing' },
 ];
 
@@ -131,15 +125,9 @@ const description =
     </div>
   </section>
 
-  <section id="resume-linkedin" class="section panel" aria-labelledby="resume-linkedin-title">
+  <section id="resume" class="section panel" aria-labelledby="resume-title">
     <div class="wrap">
-      <Resume lang={lang} resume={resumeLinkedin} titleId="resume-linkedin-title" />
-    </div>
-  </section>
-
-  <section id="resume-pdf" class="section panel" aria-labelledby="resume-pdf-title">
-    <div class="wrap">
-      <Resume lang={lang} resume={resumePdf} titleId="resume-pdf-title" />
+      <Resume lang={lang} resume={resume} />
     </div>
   </section>
 

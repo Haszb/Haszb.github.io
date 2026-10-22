@@ -5,20 +5,18 @@ import { t, type Lang } from '../i18n/ui';
 interface Props {
   lang: Lang;
   resume: CollectionEntry<'resume'>;
-  /** Heading id, unique per resume version on the page */
-  titleId: string;
 }
 
-const { lang, resume, titleId } = Astro.props;
+const { lang, resume } = Astro.props;
 const r = resume.data;
 // French pages fall back to the English file until a French one exists
-const contentLang = resume.id.split('/')[0];
+const contentLang = resume.id;
 const langNote = contentLang !== lang ? t(lang, 'resume.langNote') : '';
 ---
 
 <header class="resume-head">
   <div>
-    <h2 id={titleId}>
+    <h2 id="resume-title">
       {t(lang, 'resume.title')}
       {langNote && <span class="lang-note">({langNote})</span>}
     </h2>

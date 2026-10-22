@@ -54,7 +54,7 @@ const articles = defineCollection({
   }),
 });
 
-// src/content/resume/<lang>/<version>.yaml, one file per resume version shown as a home-page tab.
+// src/content/resume/<lang>.yaml, shown in the home page's Resume tab.
 // A missing French file falls back to the English one.
 const dated = { period: z.string(), place: z.string() };
 const resume = defineCollection({
