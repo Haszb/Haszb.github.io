@@ -8,7 +8,7 @@ The site is complete for a first version and builds cleanly (`npm run build`, `n
 
 **Latest changes (23 October)**
 
-- Resume, Skills: Hassan's new list replaces "Product & project management" and "Technical" with five rows (Machine learning, ML engineering & MLOps, Data & analytics, Product management, Project management); French translated by Claude. Soft skills keeps only what the new rows do not already say (problem solving, communication, adaptability); Jira and "user stories" are gone.
+- Resume, Skills: Hassan's new list replaces "Product & project management", "Technical" and "Soft skills" with five rows (Data & analytics, Machine learning, ML engineering & MLOps, Product management, Project management); French translated by Claude. Jira, "user stories", CI with GitHub Actions and the soft skills are gone.
 - Resume, Certifications: a "link ↗" ("lien ↗" in French) after "AWS Solutions Architect (SAA-C03)" opens the Credly badge; the skills rows use lining figures, so the digits of SAA-C03 match the capitals. Any skills row can take a `link:` in `src/content/resume/<lang>.yaml`.
 
 **Changes of 22 October**
