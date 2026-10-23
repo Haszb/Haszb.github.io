@@ -19,12 +19,12 @@ const langNote = contentLang !== lang ? t(lang, 'resume.langNote') : '';
     {t(lang, 'resume.title')}
     {langNote && <span class="lang-note">({langNote})</span>}
   </h2>
-  <p class="meta" lang={contentLang}>{r.availability}</p>
+  <p class="availability" lang={contentLang}>{r.availability}</p>
 </header>
 
 <div class="resume" lang={contentLang}>
   <section aria-label={t(lang, 'resume.experience')}>
-    <h3 class="label">{t(lang, 'resume.experience')}</h3>
+    <h3>{t(lang, 'resume.experience')}</h3>
     <ol class="entries">
       {
         r.experience.map((job) => (
@@ -54,7 +54,7 @@ const langNote = contentLang !== lang ? t(lang, 'resume.langNote') : '';
   </section>
 
   <section aria-label={t(lang, 'resume.education')}>
-    <h3 class="label">{t(lang, 'resume.education')}</h3>
+    <h3>{t(lang, 'resume.education')}</h3>
     <ol class="entries">
       {
         r.education.map((ed) => (
@@ -77,7 +77,7 @@ const langNote = contentLang !== lang ? t(lang, 'resume.langNote') : '';
   </section>
 
   <section aria-label={t(lang, 'resume.skills')}>
-    <h3 class="label">{t(lang, 'resume.skills')}</h3>
+    <h3>{t(lang, 'resume.skills')}</h3>
     <dl class="skills">
       {
         r.skills.map((s) => (
@@ -105,11 +105,16 @@ const langNote = contentLang !== lang ? t(lang, 'resume.langNote') : '';
   .resume-head {
     display: grid;
     gap: 0.6rem;
-    margin-bottom: clamp(1.75rem, 4vw, 2.75rem);
+    margin-bottom: clamp(1.25rem, 3vw, 2rem);
   }
 
   h2 {
     font-size: var(--step-2);
+  }
+
+  /* Same size and colour as the note under the Writing heading */
+  .availability {
+    color: var(--ink-2);
   }
 
   .lang-note {
@@ -133,7 +138,10 @@ const langNote = contentLang !== lang ? t(lang, 'resume.langNote') : '';
     gap: 1.25rem;
   }
 
+  /* Section titles rank between the page title and the job titles */
   .resume h3 {
+    font-size: var(--step-1);
+    font-weight: 600;
     padding-bottom: 0.6rem;
     border-bottom: 1px solid var(--rule);
   }
