@@ -15,19 +15,11 @@ const langNote = contentLang !== lang ? t(lang, 'resume.langNote') : '';
 ---
 
 <header class="resume-head">
-  <div>
-    <h2 id="resume-title">
-      {t(lang, 'resume.title')}
-      {langNote && <span class="lang-note">({langNote})</span>}
-    </h2>
-    <p class="meta" lang={contentLang}>{r.availability}</p>
-  </div>
-  <a class="download" href={r.pdf} download="Hassan-Zbib-resume.pdf" hreflang="en">
-    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
-      <path d="M12 3.5v11m0 0-4.5-4.5M12 14.5l4.5-4.5M4.5 16.5v3h15v-3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
-    </svg>
-    {t(lang, 'resume.download')}
-  </a>
+  <h2 id="resume-title">
+    {t(lang, 'resume.title')}
+    {langNote && <span class="lang-note">({langNote})</span>}
+  </h2>
+  <p class="meta" lang={contentLang}>{r.availability}</p>
 </header>
 
 <div class="resume" lang={contentLang}>
@@ -111,17 +103,9 @@ const langNote = contentLang !== lang ? t(lang, 'resume.langNote') : '';
 
 <style>
   .resume-head {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: end;
-    justify-content: space-between;
-    gap: 1rem 2rem;
-    margin-bottom: clamp(1.75rem, 4vw, 2.75rem);
-  }
-
-  .resume-head > div {
     display: grid;
     gap: 0.6rem;
+    margin-bottom: clamp(1.75rem, 4vw, 2.75rem);
   }
 
   h2 {
@@ -134,23 +118,6 @@ const langNote = contentLang !== lang ? t(lang, 'resume.langNote') : '';
     font-weight: 400;
     color: var(--muted);
     letter-spacing: 0;
-  }
-
-  .download {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.55rem 0.95rem;
-    border: 1px solid var(--rule-strong);
-    border-radius: var(--radius);
-    font-size: var(--step--1);
-    font-weight: 500;
-    text-decoration: none;
-    white-space: nowrap;
-  }
-
-  .download:hover {
-    border-color: var(--accent);
   }
 
   /* Dates sit in a left rail (as in the article list); the text fills the column to its right */

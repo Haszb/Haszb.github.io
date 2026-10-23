@@ -53,6 +53,8 @@ const introLinks = [
 ];
 
 const title = `${p.name} · ${p.role}`;
+// Under the photo the role reads as two lines, split where the profile writes " - "
+const roleLines = p.role.split(' - ');
 const description =
   lang === 'fr'
     ? 'Portfolio de Hassan Zbib : NLP, data engineering et data science. Rochondra, analyse de prix Bitcoin et projets de formation.'
@@ -62,10 +64,7 @@ const description =
 <BaseLayout lang={lang} title={title} description={description}>
   <section class="intro wrap" aria-labelledby="intro-title">
     <div class="intro-grid">
-      <div class="intro-title">
-        <p class="label">{p.role}</p>
-        <h1 id="intro-title">{p.name}</h1>
-      </div>
+      <h1 id="intro-title">{p.name}</h1>
       <div class="summary justified">
         <Summary />
       </div>
@@ -73,6 +72,7 @@ const description =
         <div class="avatar">
           <img src={p.photo} alt={p.photoAlt} width="400" height="500" />
         </div>
+        <p class="label role">{roleLines.map((line) => <span>{line}</span>)}</p>
         <ul class="intro-links">
           {
             introLinks.map((link) => (
@@ -87,6 +87,12 @@ const description =
             ))
           }
         </ul>
+        <a class="download" href={resume.data.pdf} download="Hassan-Zbib-resume.pdf" hreflang="en">
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+            <path d="M12 3.5v11m0 0-4.5-4.5M12 14.5l4.5-4.5M4.5 16.5v3h15v-3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          {t(lang, 'resume.download')}
+        </a>
       </div>
     </div>
   </section>
@@ -234,7 +240,7 @@ const description =
     padding-block: clamp(3rem, 9vw, 6.5rem) clamp(3rem, 7vw, 5rem);
   }
 
-  /* Phones: a small headshot beside the name, then the summary and the links full width.
+  /* Phones: a small headshot beside the name and the role, then the summary and the links full width.
      Wider screens: the photo and the links under it form a right column (see the media query
      below), ending on the right edge of the page frame. */
   .intro-grid {
@@ -243,25 +249,54 @@ const description =
     gap: 1.1rem clamp(1rem, 2.5vw, 1.6rem);
   }
 
-  /* The photo and the links become cells of the grid above */
+  /* The photo, the role and the links become cells of the grid above */
   .intro-aside {
     display: contents;
   }
 
   .avatar {
     grid-column: 1;
-    grid-row: 1;
+    grid-row: 1 / span 2;
+    align-self: center;
   }
 
-  .intro-title {
+  h1 {
     grid-column: 2;
     grid-row: 1;
-    align-self: center;
+    align-self: end;
+  }
+
+  .role {
+    grid-column: 2;
+    grid-row: 2;
+    align-self: start;
   }
 
   .summary,
   .intro-links {
     grid-column: 1 / -1;
+  }
+
+  .download {
+    grid-column: 1 / -1;
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 0.95rem;
+    border: 1px solid var(--rule-strong);
+    border-radius: var(--radius);
+    font-size: var(--step--1);
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .download:hover {
+    border-color: var(--accent);
+  }
+
+  .download svg {
+    flex-shrink: 0;
   }
 
   h1 {
@@ -307,8 +342,13 @@ const description =
     fill: var(--ink-2);
   }
 
-  .intro-title .label {
-    margin-bottom: 0.5rem;
+  .role {
+    font-size: 0.875rem;
+    line-height: 1.3;
+  }
+
+  .role span {
+    display: block;
   }
 
   /* On phones the headshot is cropped from the portrait photo to head and shoulders */
@@ -329,25 +369,23 @@ const description =
     transform-origin: 50% 22%;
   }
 
-  /* Two columns: the label, name and summary, then on the right the photo with the links under
-     it. The text never runs under the photo, so its line length stays constant. */
+  /* Two columns: the name and summary, then on the right the photo with the role and the links
+     under it. The text never runs under the photo, so its line length stays constant. */
   @media (min-width: 44rem) {
     .intro-grid {
       grid-template-columns: minmax(0, 1fr) auto;
       /* The last row absorbs any height difference, so the name's row stays tight */
-      grid-template-rows: auto auto 1fr;
+      grid-template-rows: auto 1fr;
       column-gap: clamp(2rem, 4vw, 3.5rem);
     }
 
-    /* The label and the name become rows of the grid, so the photo can start level with the
-       name rather than with the label above it */
-    .intro-title {
-      display: contents;
-    }
-
-    .intro-title > *,
+    h1,
     .summary {
       grid-column: 1;
+    }
+
+    h1 {
+      align-self: start;
     }
 
     /* Without this a short summary stretches to the photo column's height and its
@@ -356,23 +394,19 @@ const description =
       align-self: start;
     }
 
-    /* Keeps the label tight above the name despite the grid's row gap */
-    .intro-title .label {
-      margin-bottom: -0.6rem;
-    }
-
     .intro-aside {
       display: flex;
       flex-direction: column;
       gap: 1.6rem;
       grid-column: 2;
-      grid-row: 2 / span 2;
+      grid-row: 1 / span 2;
+      --photo: clamp(11rem, 17vw, 15rem);
       /* Drops from the name's line box to the top of its capitals */
       margin-top: calc(var(--step-4) * 0.15);
     }
 
     .avatar {
-      width: clamp(11rem, 17vw, 15rem);
+      width: var(--photo);
       aspect-ratio: 4 / 5;
     }
 
@@ -381,9 +415,29 @@ const description =
       transform-origin: 50% 0%;
     }
 
+    /* Sits close under the photo, as its caption, its longer line exactly as wide as the photo:
+       "Machine Learning & AI" measures 13.8em in Libertinus capitals. The negative margin
+       drops the letter-spacing after the last letter, so the column keeps the photo's width. */
+    .role {
+      margin-top: -0.6rem;
+      margin-right: -0.09em;
+      font-size: calc(var(--photo) / 13.8);
+    }
+
+    /* Close under the role too, so the photo, its caption and the links read as one block */
     .intro-links {
       flex-direction: column;
-      margin: 0;
+      margin: -0.6rem 0 0;
+    }
+
+    /* As wide as the photo, closing the column a small step below the links. The zero width
+       keeps a long label (the French one) from widening the column; it wraps instead. */
+    .download {
+      width: 0;
+      min-width: 100%;
+      margin-top: -0.6rem;
+      justify-content: center;
+      text-align: center;
     }
   }
 
