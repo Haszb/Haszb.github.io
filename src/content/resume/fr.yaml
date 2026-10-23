@@ -71,12 +71,18 @@ skills:
   - label: Certifications
     items: AWS Solutions Architect (SAA-C03)
     link: https://www.credly.com/badges/7a1a4f49-6ffa-451b-b202-65c66049ea01
-  - label: Produit et projet
-    items: Recueil des besoins, user stories, cadrage de MVP, Agile/Scrum, Jira
-  - label: Technique
-    items: Python, SQL, NLP/LLM (Hugging Face), cloud (AWS), MLOps
+  - label: Machine learning
+    items: Modélisation de séries temporelles et évaluation de prévisions (deep learning), NLP et analyse de documents (analyse de sentiment, résumé automatique, métriques de lisibilité), scikit-learn, TensorFlow/Keras, Hugging Face Transformers, intégration de LLM (Ollama), vision par ordinateur (CNN, transfer learning, OpenCV)
+  - label: Ingénierie ML et MLOps
+    items: FastAPI, Streamlit, Docker / Docker Compose, Airflow (orchestration de pipelines et réentraînement), MLflow (suivi d’expériences), CI avec GitHub Actions, Git, Redis, MinIO
+  - label: Données et analyse
+    items: Python (pandas, NumPy), SQL, PostgreSQL, modélisation des données et conception du stockage, nettoyage des données, analyse exploratoire, statistiques, Plotly/Dash, visualisation de données et data storytelling
+  - label: Gestion de produit
+    items: Cadrage de MVP, feuille de route, priorisation du backlog, définition des KPI, arbitrages coût–qualité, notes de cadrage et journaux de décisions
+  - label: Gestion de projet
+    items: Recueil des besoins et spécifications techniques, gestion d’appels d’offres publics et de propositions, coordination multiprestataire, négociation fournisseurs, gestion des parties prenantes, coordination d’équipe, Agile/Scrum
   - label: Savoir-être
-    items: Gestion des parties prenantes, coordination d’équipe, résolution de problèmes, communication, adaptabilité
+    items: Résolution de problèmes, communication, adaptabilité
   - label: Langues
     items: Français (langue maternelle), anglais (bilingue)
   - label: Centres d’intérêt

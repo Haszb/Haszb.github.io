@@ -71,12 +71,18 @@ skills:
   - label: Certifications
     items: AWS Solutions Architect (SAA-C03)
     link: https://www.credly.com/badges/7a1a4f49-6ffa-451b-b202-65c66049ea01
-  - label: Product & project management
-    items: Requirements gathering, user stories, MVP scoping, Agile/Scrum, Jira
-  - label: Technical
-    items: Python, SQL, NLP/LLM (Hugging Face), cloud (AWS), MLOps
+  - label: Machine learning
+    items: Time-series modelling and forecast evaluation (deep learning), NLP and document analysis (sentiment analysis, summarisation, readability metrics), scikit-learn, TensorFlow/Keras, Hugging Face Transformers, LLM integration (Ollama), computer vision (CNNs, transfer learning, OpenCV)
+  - label: ML engineering & MLOps
+    items: FastAPI, Streamlit, Docker / Docker Compose, Airflow (pipeline orchestration and retraining), MLflow (experiment tracking), CI with GitHub Actions, Git, Redis, MinIO
+  - label: Data & analytics
+    items: Python (pandas, NumPy), SQL, PostgreSQL, data modelling and storage design, data cleaning, exploratory data analysis, statistics, Plotly/Dash, data visualisation and storytelling
+  - label: Product management
+    items: MVP scoping, roadmapping, backlog prioritisation, KPI definition, cost–quality trade-off analysis, project briefs and decision logs
+  - label: Project management
+    items: Requirements gathering and technical specifications, public tender and proposal management, multi-provider coordination, supplier negotiation, stakeholder management, team coordination, Agile/Scrum
   - label: Soft skills
-    items: Stakeholder management, team coordination, problem solving, communication, adaptability
+    items: Problem solving, communication, adaptability
   - label: Languages
     items: French (native), English (bilingual)
   - label: Interests
