@@ -74,7 +74,7 @@ const resume = defineCollection({
     education: z.array(
       z.object({ school: z.string(), degree: z.string(), ...dated, details: z.string().optional() }),
     ),
-    skills: z.array(z.object({ label: z.string(), items: z.string() })),
+    skills: z.array(z.object({ label: z.string(), items: z.string(), link: z.url().optional() })),
   }),
 });
 

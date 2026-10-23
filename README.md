@@ -6,7 +6,11 @@ Personal portfolio of Hassan Zbib, in English (`/`) and French (`/fr/`). Built w
 
 The site is complete for a first version and builds cleanly (`npm run build`, `npm run check`: 0 errors). It has been checked in Firefox on desktop and phone widths, in light and dark mode. It is **published** at <https://haszb.github.io> from the GitHub repository [Haszb/Haszb.github.io](https://github.com/Haszb/Haszb.github.io).
 
-**Latest changes (22 October)**
+**Latest changes (23 October)**
+
+- Resume, Certifications: a "link ↗" ("lien ↗" in French) after "AWS Solutions Architect (SAA-C03)" opens the Credly badge; the skills rows use lining figures, so the digits of SAA-C03 match the capitals. Any skills row can take a `link:` in `src/content/resume/<lang>.yaml`.
+
+**Changes of 22 October**
 
 - French resume (`src/content/resume/fr.yaml`): Hassan's own French text, job titles in French. Dates stay numeric ("depuis 02/2026"; "02/2026 – aujourd’hui" wraps in the date column). The English education entries follow the French (Liora in partnership with Mines Paris – PSL, RNCP level 7, MSc title), and the conflict-of-interest clause left the first Rochondra bullet. The French Download button reads "Télécharger le PDF (en anglais)", since the PDF is the English CV.
 - Resume: the LinkedIn version, reworded by Hassan, is kept; the PDF version and its tab are gone. The tab bar now reads Projects | Resume | Writing, the resume tab lives at `/#resume` (the header's Resume link follows), and the file moved to `src/content/resume/en.yaml`.

@@ -70,6 +70,7 @@ education:
 skills:
   - label: Certifications
     items: AWS Solutions Architect (SAA-C03)
+    link: https://www.credly.com/badges/7a1a4f49-6ffa-451b-b202-65c66049ea01
   - label: Product & project management
     items: Requirements gathering, user stories, MVP scoping, Agile/Scrum, Jira
   - label: Technical

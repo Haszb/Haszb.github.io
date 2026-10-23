@@ -91,7 +91,17 @@ const langNote = contentLang !== lang ? t(lang, 'resume.langNote') : '';
         r.skills.map((s) => (
           <div>
             <dt>{s.label}</dt>
-            <dd>{s.items}</dd>
+            <dd>
+              {s.items}
+              {s.link && (
+                <a class="proof" href={s.link} hreflang="en">
+                  {t(lang, 'resume.link')}
+                  <svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true">
+                    <path d="M8 6h10v10M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </a>
+              )}
+            </dd>
           </div>
         ))
       }
@@ -243,9 +253,20 @@ const langNote = contentLang !== lang ? t(lang, 'resume.langNote') : '';
     font-weight: 600;
   }
 
+  /* Lining figures, so codes like SAA-C03 keep their digits at capital height */
   .skills dd {
     margin: 0;
     color: var(--ink-2);
+    font-variant-numeric: lining-nums;
+  }
+
+  /* A link to the credential, after its name */
+  .proof {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-left: 0.75rem;
+    white-space: nowrap;
   }
 
   /* Phones: one column, the dates under the title */
