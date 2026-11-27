@@ -4,8 +4,8 @@
 # Quote any value that contains a colon followed by a space, or the file breaks silently.
 # To add a role, copy a block under `experience` (from `- company:` to the end of its bullets).
 
-# Path to the PDF offered by the Download button (the file lives in public/; it is in English).
-pdf: /hassan-zbib-resume.pdf
+# Path to the PDF offered by the Download button (the file lives in public/resume/fr/; spaces written as %20).
+pdf: /resume/fr/Hassan%20Zbib%20cv.pdf
 
 availability: France · Nationalité européenne · Mobilité géographique et télétravail possibles
 

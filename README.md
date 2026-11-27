@@ -6,8 +6,14 @@ Personal portfolio of Hassan Zbib, in English (`/`) and French (`/fr/`). Built w
 
 The site is complete for a first version and builds cleanly (`npm run build`, `npm run check`: 0 errors). It has been checked in Firefox on desktop and phone widths, in light and dark mode. It is **published** at <https://haszb.github.io> from the GitHub repository [Haszb/Haszb.github.io](https://github.com/Haszb/Haszb.github.io).
 
-**Latest changes (23 October)**
+**Latest changes (27 November)**
 
+- Resume PDFs: Hassan's new layout, one per language, in `public/resume/en/` and `public/resume/fr/`; the old `public/hassan-zbib-resume.pdf` is gone. Each Download button offers its own language's PDF, so the French button now reads "Télécharger le PDF", without "(en anglais)". The file downloads under Hassan's name for it ("Hassan Zbib resume.pdf", "Hassan Zbib cv.pdf").
+
+**Changes of 23 October**
+
+- Home intro: the role sits under the photo on two lines, sized to the photo's width; the PDF download moved under the links.
+- Resume: availability line at body size, less space before Experience, section titles as real subheadings.
 - Resume, Skills: Hassan's new list replaces "Product & project management", "Technical" and "Soft skills" with five rows (Data & analytics, Machine learning, ML engineering & MLOps, Product management, Project management); French translated by Claude. Jira, "user stories", CI with GitHub Actions and the soft skills are gone.
 - Resume, Certifications: a "link ↗" ("lien ↗" in French) after "AWS Solutions Architect (SAA-C03)" opens the Credly badge; the skills rows use lining figures, so the digits of SAA-C03 match the capitals. Any skills row can take a `link:` in `src/content/resume/<lang>.yaml`.
 
@@ -52,7 +58,6 @@ The site is complete for a first version and builds cleanly (`npm run build`, `n
 
 - [ ] The Rochondra case study links to `Haszb/Rochondra/blob/main/docs/roadmap.md`, which answers 404 (the file is not committed yet, or the repository is private). Now that the site is live, this link is broken for visitors: commit the roadmap (item below) or make the link point elsewhere.
 - [ ] Decide whether the intro role line changes to match the resume (now "Founder & Technical Product Owner" at Rochondra Lab).
-- [ ] Fix "comparable scores" in the PDF CV (contradicts D21), then replace `public/hassan-zbib-resume.pdf`.
 - [ ] Proofread the French text (drafted by Claude): profile, card summaries, both case studies, article summaries.
 - [ ] Commit `_sources/roadmap.md` to the Rochondra repository as `docs/roadmap.md` (the Rochondra case study links there).
 - [ ] Optionally delete `src/content/profile/photo_cv_small.jpg` (the site uses the resized copy `public/img/photo.jpg`; git ignores the original).
@@ -90,7 +95,7 @@ All text lives in `src/content/`. You shouldn't need to touch anything else.
 | Rochondra case study | `src/content/projects/{en,fr}/rochondra.mdx` |
 | Bitcoin case study | `src/content/projects/{en,fr}/bitcoin.mdx` |
 | Resume | `src/content/resume/en.yaml`, `src/content/resume/fr.yaml` |
-| Resume PDF (Download button) | `public/hassan-zbib-resume.pdf`: replace the file, keep the name |
+| Resume PDFs (Download button) | `public/resume/en/Hassan Zbib resume.pdf`, `public/resume/fr/Hassan Zbib cv.pdf`: replace a file and keep its name, or change `pdf:` in the matching resume YAML (spaces written as `%20`) |
 | Training project cards | `src/content/projects/{en,fr}/{rakuten,cartofriches,floraflow}.md` |
 | Interface labels (menu, buttons) | `src/i18n/ui.ts` |
 
