@@ -1,156 +1,112 @@
 # haszb.github.io
 
-Personal portfolio of Hassan Zbib, in English (`/`) and French (`/fr/`). Built with [Astro](https://astro.build), deployed to GitHub Pages.
+Personal portfolio of Hassan Zbib, data scientist and author of [Rochondra](https://github.com/Haszb/Rochondra), in English and French.
 
-## Status (22 October 2026)
+**Live site: <https://haszb.github.io>** (French: <https://haszb.github.io/fr/>)
 
-The site is complete for a first version and builds cleanly (`npm run build`, `npm run check`: 0 errors). It has been checked in Firefox on desktop and phone widths, in light and dark mode. It is **published** at <https://haszb.github.io> from the GitHub repository [Haszb/Haszb.github.io](https://github.com/Haszb/Haszb.github.io).
+Built with [Astro](https://astro.build) as a fully static site and deployed to GitHub Pages on every push to `main`.
 
-**Latest changes (27 November)**
+## Features
 
-- Resume PDFs: Hassan's new layout, one per language, in `public/resume/en/` and `public/resume/fr/`; the old `public/hassan-zbib-resume.pdf` is gone. Each Download button offers its own language's PDF, so the French button now reads "Télécharger le PDF", without "(en anglais)". The file downloads under Hassan's name for it ("Hassan Zbib resume.pdf", "Hassan Zbib cv.pdf").
+- **Bilingual**: every page exists in English (`/`) and French (`/fr/`), and a link in the header switches between them without losing the reading position.
+- **Home page**: photo, short bio and contact links, then a tab bar with one section at a time: Projects, Resume and Writing (Medium articles). Each tab has its own URL (`/#resume`, `/#writing`).
+- **Two case studies**:
+  - *Rochondra*: the problem, the approach, corpus figures, an architecture diagram, the key decisions from the project's decision log, and the roadmap.
+  - *Bitcoin price analysis*: told as the origin of Rochondra (data, market analysis, RNN experiment, result, pivot), with four interactive Plotly charts.
+- **Resume** in both languages, with a PDF download in each.
+- **Light and dark themes**: follows the visitor's system setting, with a toggle in the header that the browser remembers.
+- **No backend**: static HTML, CSS and a little JavaScript. Plotly loads only on the Bitcoin page, once a chart scrolls into view.
 
-**Changes of 23 October**
+## Tech stack
 
-- Home intro: the role sits under the photo on two lines, sized to the photo's width; the PDF download moved under the links.
-- Resume: availability line at body size, less space before Experience, section titles as real subheadings.
-- Resume, Skills: Hassan's new list replaces "Product & project management", "Technical" and "Soft skills" with five rows (Data & analytics, Machine learning, ML engineering & MLOps, Product management, Project management); French translated by Claude. Jira, "user stories", CI with GitHub Actions and the soft skills are gone.
-- Resume, Certifications: a "link ↗" ("lien ↗" in French) after "AWS Solutions Architect (SAA-C03)" opens the Credly badge; the skills rows use lining figures, so the digits of SAA-C03 match the capitals. Any skills row can take a `link:` in `src/content/resume/<lang>.yaml`.
+| Area | Choice |
+|---|---|
+| Framework | Astro 7.3.5 with MDX (`@astrojs/mdx` 8.0.2) |
+| Charts | Plotly (`plotly.js-cartesian-dist-min` 4.1.1) |
+| Fonts | Libertinus Serif and IBM Plex Mono, self-hosted |
+| Icons | Inline SVG; brand logos from Simple Icons 9.21.0 (CC0) |
+| Hosting | GitHub Pages, built by GitHub Actions |
 
-**Changes of 22 October**
+All dependency versions are pinned in `package.json`.
 
-- French resume (`src/content/resume/fr.yaml`): Hassan's own French text, job titles in French. Dates stay numeric ("depuis 02/2026"; "02/2026 – aujourd’hui" wraps in the date column). The English education entries follow the French (Liora in partnership with Mines Paris – PSL, RNCP level 7, MSc title), and the conflict-of-interest clause left the first Rochondra bullet. The French Download button reads "Télécharger le PDF (en anglais)", since the PDF is the English CV.
-- Resume: the LinkedIn version, reworded by Hassan, is kept; the PDF version and its tab are gone. The tab bar now reads Projects | Resume | Writing, the resume tab lives at `/#resume` (the header's Resume link follows), and the file moved to `src/content/resume/en.yaml`.
-- Published: the local repository was pushed to `Haszb/Haszb.github.io` (remote `origin`), Pages source set to GitHub Actions, first deployment succeeded. Every page and the chart data answer on the live site.
-- Pushing works over SSH as Haszb: `github.com` in `~/.ssh/config` uses the key `id_ed25519` (Haszb); the alias `github-compteB` uses `id_ed25519_compteB` (Rochondra-lab). `ssh -T git@github.com` should answer "Hi Haszb!".
-- Tab bar: one line at every width. It stays centred while it fits and scrolls sideways when it does not (at 400px the current four tabs overflow by about 40px), running out to the screen edges; opening a tab scrolls it into view. Desktop is unchanged.
-- Address: `haszb.github.io` is kept for now; a personal domain stays possible later (see "Publishing").
-- Inferred project periods and article reading times confirmed by Hassan.
+## Getting started
 
-**Changes on 20 October**
+Requires Node 22.
 
-- Profile and project summaries reworded by Hassan (French profile, all French summaries, English Bitcoin and Rochondra); the English profile was brought in line with the French.
-- Featured cards: the kicker line (type · period) spans the whole card, the visual starts level with the title, and titles are 10% smaller ("Bitcoin, analyse du prix" fits on one line from 1000px wide). The Rochondra figures now read URLs tried, whitepapers retrieved, volume.
-- Training cards: context and team lines dropped (the meta line disappears when empty); Rakuten is dated 2024.
-- Resume: the summary paragraph is gone from both versions (and from the schema).
-- Dev server fix: the Bitcoin charts (and so the grid's drop-down menus) had stopped loading under `npm run dev` because Vite served a stale Plotly pre-bundle. Plotly is now pre-bundled at startup (`astro.config.mjs`). The production build was never affected.
+```bash
+npm install          # install dependencies
+npm run dev          # dev server at http://localhost:4321, reloads on save
+npx astro dev stop   # stop the dev server (it runs in the background)
+npm run check        # type and content checks
+npm run build        # production build into dist/
+npx astro preview    # serve dist/ locally (stop with npx astro preview stop)
+```
 
-**Changes on 19 October**
+To open the dev server on a phone on the same Wi-Fi, start it with `npm run dev -- --host` and open the "Network" address it prints (for example `http://192.168.1.17:4321/`). The 172.x and 192.168.122.x addresses belong to Docker and virtual machines.
 
-- Version control: the folder is now a git repository. Claude proposes each commit and makes it only after Hassan confirms.
-- Font: Libertinus Serif replaces Inter for all text, chosen on a temporary trial page (since removed) against Latin Modern, STIX Two, Charter, EB Garamond, several screen serifs and sans. IBM Plex Mono stays for code.
-- Home intro: Email, GitHub, LinkedIn and Medium links now sit under the photo in the right column, one per line, each with its logo. Phones are unchanged (small headshot beside the name, links after the summary).
-- Contact tab removed, as the links under the photo carry the same information; the header's Contact link went with it (the footer still lists Email, GitHub, LinkedIn and Medium on every page).
-- Training project cards (Rakuten, Cartofriches, FloraFlow): new summaries, tags and pictures from Hassan, French versions translated by Claude. The FloraFlow Grad-CAM picture is now a 51 KB JPEG.
-- French profile retranslated from the current English one (new role line, five paragraphs, no more lorem ipsum); French Rochondra card brought in line with the English.
+On this machine Node is installed for the user only: run `export PATH=$HOME/.local/node/bin:$PATH` first.
 
-**Earlier changes (16 October)**
+## Project structure
 
-- Home page prototype: under the intro, a tab bar (Projects | Resume · LinkedIn | Resume · PDF | Writing) shows one section at a time; Projects opens by default. Each tab has its own URL (`/#writing`…). Two resume versions are being compared: one worded from the LinkedIn export, one from the PDF CV. Both offer the PDF for download. French pages show the English resume, marked "(en anglais)".
-- Tab bar restyled: plain centred labels on a single rule, the selected tab underlined in the accent colour (the shaded boxes were too busy).
-- One right edge on every page: the page frame narrowed from 72rem to 64rem and the content now fills it, so nothing stops short leaving a blank on the right. Text columns widened from 40rem to 46rem.
-- Resume: dates and place moved to a left column (like the article list); the text fills the column to their right and is justified on desktop.
-- Public email set to hassan.zb@gmail.com.
-- Checked on a real phone over the local network (see "Running locally").
-- Justified text on desktop and tablet (left-aligned on phones): home introduction, featured project cards, project page summaries and body paragraphs. Headings, lists, labels and the three small project cards stay left-aligned.
-
-**Still to do**
-
-- [ ] The Rochondra case study links to `Haszb/Rochondra/blob/main/docs/roadmap.md`, which answers 404 (the file is not committed yet, or the repository is private). Now that the site is live, this link is broken for visitors: commit the roadmap (item below) or make the link point elsewhere.
-- [ ] Decide whether the intro role line changes to match the resume (now "Founder & Technical Product Owner" at Rochondra Lab).
-- [ ] Proofread the French text (drafted by Claude): profile, card summaries, both case studies, article summaries.
-- [ ] Commit `_sources/roadmap.md` to the Rochondra repository as `docs/roadmap.md` (the Rochondra case study links there).
-- [ ] Optionally delete `src/content/profile/photo_cv_small.jpg` (the site uses the resized copy `public/img/photo.jpg`; git ignores the original).
-- [x] Choose a resume version: LinkedIn (22 October).
-- [x] Write the French resume (22 October).
-- [x] Publish (22 October).
-- [x] Tab bar on phones: one line that scrolls sideways (22 October).
-- [x] Address: keep `haszb.github.io` for now (22 October).
-- [x] Check inferred project periods and reading times (22 October).
-
-## What the site contains
-
-| Page | URL | Content |
-|---|---|---|
-| Home | `/`, `/fr/` | Photo and short bio, then a tab bar: projects (two featured, three training cards), resume, Medium articles |
-| Rochondra | `/projects/rochondra/` | Problem, approach, corpus figures, architecture diagram, decisions D6/D21/D24/D16, roadmap (Phase 1 in progress) |
-| Bitcoin | `/projects/bitcoin/` | Told as the origin of Rochondra: data, market analysis, RNN experiment, result, pivot. Four interactive charts |
-
-Design choices agreed during the planning session:
-
-- Two sites eventually: this portfolio now, a separate Rochondra project site (e.g. rochondra.com) later. This portfolio will then become the author page and article index, linking to it.
-- No database or backend here: static pages only.
-- The Rochondra case study shows where the project stands (roadmap phases), not a list of known gaps; the linked documents hold the candid version.
-- Articles are listed with links to Medium (not copied onto the site).
-- Editorial style; follows the visitor's light/dark setting, with a toggle in the header (choice remembered in the browser).
+```
+public/                 static files served from the site root
+  data/btc-grid/        results of the Bitcoin hyperparameter grid (JSON)
+  img/                  photo, card images, chart fallback images
+  resume/{en,fr}/       resume PDFs
+src/
+  content/              all the text: profile, projects, resume, articles
+  components/           page sections and case-study components
+  data/btc/             Bitcoin chart data (JSON)
+  i18n/ui.ts            interface labels in both languages
+  layouts/              base layout (header, footer, theme toggle)
+  pages/                routes; French pages under pages/fr/
+  scripts/charts.ts     lazy Plotly loading and drawing
+  styles/global.css     theme tokens, typography, layout widths
+.github/workflows/      deployment to GitHub Pages
+```
 
 ## Editing content
 
-All text lives in `src/content/`. You shouldn't need to touch anything else.
+All text lives in `src/content/`, and every English file has a French twin: change both together.
 
 | What | File |
 |---|---|
-| Name, role, photo, email, links, short bio | `src/content/profile/en.md`, `src/content/profile/fr.md` |
+| Name, role, photo, email, links, short bio | `src/content/profile/{en,fr}.md` |
 | Articles (Medium list) | `src/content/articles.yaml` |
 | Rochondra case study | `src/content/projects/{en,fr}/rochondra.mdx` |
 | Bitcoin case study | `src/content/projects/{en,fr}/bitcoin.mdx` |
-| Resume | `src/content/resume/en.yaml`, `src/content/resume/fr.yaml` |
-| Resume PDFs (Download button) | `public/resume/en/Hassan Zbib resume.pdf`, `public/resume/fr/Hassan Zbib cv.pdf`: replace a file and keep its name, or change `pdf:` in the matching resume YAML (spaces written as `%20`) |
 | Training project cards | `src/content/projects/{en,fr}/{rakuten,cartofriches,floraflow}.md` |
+| Resume | `src/content/resume/{en,fr}.yaml` |
+| Resume PDFs (Download button) | `public/resume/en/Hassan Zbib resume.pdf`, `public/resume/fr/Hassan Zbib cv.pdf`: replace a file and keep its name, or change `pdf:` in the matching resume YAML (spaces written as `%20`) |
 | Interface labels (menu, buttons) | `src/i18n/ui.ts` |
 
-Every page exists in both languages: when you change an `en/` file, change its `fr/` twin.
+- **YAML**: wrap any value containing a colon followed by a space in quotes. Otherwise the file breaks silently and its collection comes out empty (the build only warns).
+- **Photo**: put the image in `public/img/` and reference it as `/img/<name>`. Its height follows the length of the bio, and it is cropped from the bottom or sides so the head is never cut. Keep it under about 1000 px wide.
+- **Articles**: copy an entry in `articles.yaml`, give it a new `id`, and write the summary in both languages.
+- **Case studies** are Markdown with a few components (`<Stats>`, `<Chart>`, `<Decision>`, `<Roadmap>`…). The prose can be edited freely; the component tags stay as they are.
+- **Roadmap progress**: on the Rochondra page, `<Roadmap lang="en" current={1} />` marks Phase 1 as in progress. Raise `current` as phases complete, in both languages.
 
-**Photo.** Put the image in `public/img/` and reference it as `/img/<name>` (anything in `public/` is served from the site root; a path on your disk will not work). The photo's height follows the length of your bio automatically, and it is cropped from the bottom or sides so the head is never cut. Keep it under ~1000 px wide so the page stays light.
+### Troubleshooting
 
-**Adding an article.** Copy an entry in `articles.yaml`, give it a new `id`, and write the summary in both languages. If a summary contains a colon followed by a space, wrap it in single quotes.
+- *Error page after saving*: usually a typo, such as an unquoted colon in YAML or a wrong path. The browser and the terminal name the file and the line.
+- *Old content, or "Missing src/content/profile/en.md"*: save the file again. If that is not enough, restart the dev server.
+- *Bitcoin charts not drawing under `npm run dev`* (console: "504 Outdated Optimize Dep"): the Vite cache is stale. Stop the server, delete `node_modules/.vite`, restart.
+- *Floating dark bar at the bottom*: Astro's developer toolbar. It only appears on the dev server.
 
-**Case studies** are Markdown with a few components (`<Stats>`, `<Chart>`, `<Decision>`, `<Roadmap>`, …). Edit the prose freely; keep the component tags as they are, or ask Claude to change them.
+## Deployment
 
-**Roadmap progress.** On the Rochondra page, `<Roadmap lang="en" current={1} />` marks Phase 1 as in progress. Change `current` as phases complete (in both languages).
+Each push to `main` runs `.github/workflows/deploy.yml`, which builds the site and publishes it at <https://haszb.github.io> in about a minute. A failed run leaves the previous version online. The repository's Pages source must be set to **GitHub Actions** (Settings → Pages). If a "pages build and deployment" run appears, the source has been switched back to "Deploy from a branch", which would publish the raw files instead of the built site.
 
-## Running locally
-
-Node 22 is installed for your user only, in `~/.local/node`. In a terminal, from this folder:
-
-```bash
-export PATH=$HOME/.local/node/bin:$PATH
-npm install          # first time only
-npm run dev          # http://localhost:4321 — the page reloads when you save a file
-npx astro dev stop   # stop the dev server (it keeps running in the background otherwise)
-npm run build        # production build into dist/
-npm run check        # type and content checks
-```
-
-**On your phone.** With the phone on the same Wi-Fi, start the server with `npm run dev -- --host` (add `--force` if a dev server is already running) and open the "Network" address it prints, e.g. `http://192.168.1.17:4321/`; the 172.x and 192.168.122.x addresses are Docker and virtual machines. For a quick look without a phone, Firefox's Responsive Design Mode (Ctrl+Shift+M) simulates phone widths.
-
-**Troubleshooting**
-
-- *Error page after saving*: usually a typo (unquoted colon in YAML, wrong path). The browser and terminal name the file and line; fix and save.
-- *Page stuck on old content or "Missing src/content/profile/en.md"*: save the file again; if that is not enough, stop and restart the dev server.
-- *Floating dark bar at the bottom*: Astro's developer toolbar, only on the local dev server.
-- *Light/dark*: use the moon/sun button in the header.
-
-## Publishing
-
-The repository is [Haszb/Haszb.github.io](https://github.com/Haszb/Haszb.github.io) (remote `origin`), with Settings → Pages → Source set to **GitHub Actions**. To publish, commit and run `git push`: each push to `main` rebuilds and publishes the site at <https://haszb.github.io> in about a minute (`.github/workflows/deploy.yml`). Follow the run in the repository's Actions tab; a failed run leaves the previous version online.
-
-Only the "Deploy to GitHub Pages" workflow should run. If a "pages build and deployment" run appears, the Pages source has been switched back to "Deploy from a branch", which would publish the raw files instead of the built site.
-
-Custom domain later: add a `public/CNAME` file containing the domain, change `site` in `astro.config.mjs`, and configure DNS as GitHub describes.
+For a custom domain, add a `public/CNAME` file containing the domain, change `site` in `astro.config.mjs`, and configure DNS as GitHub describes.
 
 ## Technical notes
 
-- **Stack**: Astro 7.3.5 with MDX, self-hosted fonts (Libertinus Serif, IBM Plex Mono), Plotly (cartesian build) for charts. All versions pinned in `package.json`.
-- **Bilingual routing**: Astro i18n, English unprefixed, French under `/fr/`. Pages: `src/pages/`; shared page bodies: `src/components/HomePage.astro`, `CasePage.astro`.
-- **Theme**: colour tokens in `src/styles/global.css` (light on `:root`, dark under `prefers-color-scheme` and `[data-theme='dark']`; keep the two dark blocks identical). The toggle lives in `src/layouts/BaseLayout.astro`.
-- **Charts** (`src/components/Chart.astro`, `src/scripts/charts.ts`): Plotly loads only on the Bitcoin page, when a chart scrolls into view; charts redraw on theme change. Because the import is lazy, `astro.config.mjs` lists Plotly in `vite.optimizeDeps.include`, otherwise the dev server can serve a stale copy ("504 Outdated Optimize Dep") and no chart draws. Each chart shows a static PNG until it is drawn (or if JavaScript is off).
-- **Chart data**: `src/data/btc/*.json` and `public/data/btc-grid/*.json` were extracted from the [bitcoin_price_analysis](https://github.com/Haszb/bitcoin_price_analysis) notebooks and the 168 result CSVs in its `data/2026_01_15/` folder (2 datasets × 3 architectures × 7 hyperparameters). The interactive grid replaces the original Dash app, with no server. Fallback images in `public/img/btc/` are the PNGs embedded in the notebooks.
-- **Typography**: one family, `--serif` (Libertinus Serif: regular, italic, semibold, bold), set in `src/styles/global.css`. Reading text is justified with automatic hyphenation from `44rem` wide: `.prose > p` plus any element given the `justified` class (home intro, featured cards, case page summary, resume text).
-- **Layout widths**: `--wide` (64rem) is the page frame (`.wrap`) and every block ends on its right edge; `--measure` (46rem) caps text columns. The resume and the article list put dates in an 11rem left column so the text beside them reaches the edge; the case pages do the same with the facts sidebar.
-- **Icons**: inline SVG in the text colour, no icon package. The logos under the home photo are Simple Icons 9.21.0 paths (CC0; the last release that still has LinkedIn), pasted into `HomePage.astro`.
-- **Card images** in `public/img/academic/` come from the Rakuten and FloraFlow repositories and slide 12 of the Cartofriches PDF.
-
-## Not published
-
-`_sources/` holds the Rochondra brief, decision log and roadmap used to write the content. It is git-ignored. `_sources/roadmap.md` is the Markdown conversion of the roadmap `.docx`, ready to commit to the Rochondra repository as `docs/roadmap.md`.
+- **Bilingual routing**: Astro i18n, English unprefixed, French under `/fr/`. Routes are in `src/pages/`; the shared page bodies are `src/components/HomePage.astro` and `CasePage.astro`.
+- **Theme**: colour tokens in `src/styles/global.css`, light on `:root` and dark twice, under `prefers-color-scheme` and under `[data-theme='dark']`. Keep the two dark blocks identical. The toggle lives in `src/layouts/BaseLayout.astro`.
+- **Charts** (`src/components/Chart.astro`, `src/scripts/charts.ts`): Plotly is imported lazily when a chart scrolls into view, and charts redraw when the theme changes. Each chart shows a static PNG until it is drawn, or if JavaScript is off. Because the import is lazy, `astro.config.mjs` lists Plotly in `vite.optimizeDeps.include` so the dev server never serves a stale copy.
+- **Chart data**: `src/data/btc/*.json` and `public/data/btc-grid/*.json` were extracted from the notebooks of [bitcoin_price_analysis](https://github.com/Haszb/bitcoin_price_analysis) and the 168 result CSVs in its `data/2026_01_15/` folder (2 datasets × 3 architectures × 7 hyperparameters). The interactive grid replaces the original Dash app, with no server. The fallback images in `public/img/btc/` are the PNGs embedded in the notebooks.
+- **Typography**: one family, `--serif` (Libertinus Serif in regular, italic, semibold and bold). Reading text is justified with automatic hyphenation from `44rem` wide: `.prose > p` plus any element with the `justified` class.
+- **Layout widths**: `--wide` (64rem) is the page frame (`.wrap`), and every block ends on its right edge. `--measure` (46rem) caps text columns. The resume and the article list put dates in an 11rem left column so the text beside them reaches the edge; the case pages do the same with a facts sidebar.
+- **Icons**: inline SVG in the text colour, no icon package. The logos under the home photo are Simple Icons 9.21.0 paths (the last release that still has LinkedIn), pasted into `HomePage.astro`.
+- **Card images** in `public/img/academic/` come from the Rakuten and FloraFlow repositories and from slide 12 of the Cartofriches PDF.
+- **Not in the repository**: `_sources/`, the Rochondra brief, decision log and roadmap the case study was written from, is git-ignored, as is the original photo `src/content/profile/photo_cv_small.jpg`.

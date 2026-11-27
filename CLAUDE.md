@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Hassan's bilingual portfolio (Astro, static, GitHub Pages). Hassan edits the text in `src/content/`; Claude owns all code. When resuming, read the **Status** section of `README.md` first: it holds the open to-do list. The README's "Technical notes" map the code.
+Hassan's bilingual portfolio (Astro, static, GitHub Pages). Hassan edits the text in `src/content/`; Claude owns all code. The project is finished; the README is a standard project README (features, setup, content editing, deployment), and its "Technical notes" map the code. Keep it current when the code changes, but don't add a changelog or to-do list to it.
 
 ## Scope
 
